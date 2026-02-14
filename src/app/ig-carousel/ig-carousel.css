@@ -1,0 +1,128 @@
+/* ═══════════════════════════════════════════════════════════
+   ig-carousel.css
+   Carrusel infinito autodeslizante — estilo editorial
+═══════════════════════════════════════════════════════════ */
+
+.ig-section {
+  padding: 80px 0 80px 48px;
+  overflow: hidden;
+}
+
+/* ── Header ───────────────────────────────────────────────── */
+.ig-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-right: 48px;
+  margin-bottom: 36px;
+}
+
+.ig-label {
+  font-size: 10px;
+  letter-spacing: 0.35em;
+  text-transform: uppercase;
+  opacity: 0.45;
+}
+
+.ig-handle {
+  font-size: 13px;
+  letter-spacing: 0.1em;
+  opacity: 0.55;
+  border-bottom: 1px solid currentColor;
+  padding-bottom: 2px;
+  transition: opacity 0.2s;
+  cursor: pointer;
+}
+.ig-handle:hover { opacity: 1; }
+
+/* ── Wrapper — clipea el overflow ─────────────────────────── */
+.ig-track-wrap {
+  overflow: hidden;
+  width: 100%;
+  /* cursor de pausa al hacer hover */
+  cursor: default;
+}
+
+/* ── Track — ancho dinámico, movido por JS ────────────────── */
+.ig-track {
+  display: flex;
+  gap: 4px;
+  width: max-content;
+  /* Sin transition aquí: el JS mueve frame a frame */
+  will-change: transform;
+}
+
+/* ── Item individual ─────────────────────────────────────── */
+.ig-item {
+  flex: 0 0 auto;
+  width: clamp(280px, 35vw, 480px); 
+  aspect-ratio: 4 / 5; 
+  
+  overflow: hidden;
+  position: relative;
+  background: #1a1a18;
+}
+
+.ig-item img,
+.ig-item video {
+  width: 100%;
+  height: 100%;
+  /* cover asegura que no queden franjas negras, 
+     pero ahora con 4:5 casi no recortará nada */
+  object-fit: cover; 
+  object-position: center;
+  pointer-events: none;
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  display: block;
+}
+
+.ig-item:hover img,
+.ig-item:hover video {
+  transform: scale(1.04);
+}
+
+/* ── Badge de video ──────────────────────────────────────── */
+.ig-item-play {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 32px;
+  height: 32px;
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.ig-item-play svg {
+  width: 12px;
+  height: 12px;
+  margin-left: 2px; /* compensa el triángulo visualmente */
+}
+
+/* ── Responsive ──────────────────────────────────────────── */
+@media (max-width: 900px) {
+  .ig-section {
+    padding-left: 28px;
+  }
+  .ig-header {
+    padding-right: 28px;
+  }
+}
+
+@media (max-width: 768px) {
+  .ig-section {
+    padding: 60px 0 60px 20px;
+  }
+  .ig-header {
+    padding-right: 20px;
+  }
+  .ig-item {
+    width: clamp(160px, 65vw, 260px);
+  }
+}

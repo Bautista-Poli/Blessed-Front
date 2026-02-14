@@ -1,0 +1,56 @@
+<!-- src/app/components/ig-carousel/ig-carousel.html -->
+
+<section class="ig-section" (window:resize)="onResize()">
+
+  <!-- Header -->
+  <div class="ig-header">
+    <span class="ig-label">Seguinos</span>
+    <a
+      href="https://instagram.com/bblessedd"
+      target="_blank"
+      rel="noopener"
+      class="ig-handle"
+    >
+      &#64;bblessedd
+    </a>
+  </div>
+
+  <!-- Track wrapper — clipa el overflow -->
+  <div
+    class="ig-track-wrap"
+    #wrapper
+  >
+    <!-- Track — se mueve via JS con translateX -->
+    <div class="ig-track" #track>
+
+      @for (item of mediaLoop; track $index) {
+        <div class="ig-item">
+
+          @if (item.type === 'video') {
+            <!-- Video: autoplay + muted + loop + playsinline son obligatorios
+                 para que el browser lo reproduzca sin interacción del usuario -->
+            <video
+              [src]="item.src"
+              autoplay
+              [muted]="true" 
+              loop
+              playsinline
+              preload="auto"
+              class="ig-video"
+            ></video>
+            <div class="ig-item-play" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="white">
+                <path d="M5 3l14 9-14 9V3z"/>
+              </svg>
+            </div>
+          } @else {
+            <img [src]="item.src" [alt]="item.alt" loading="lazy" />
+          }
+
+        </div>
+      }
+
+    </div>
+  </div>
+
+</section>

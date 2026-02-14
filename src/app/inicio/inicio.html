@@ -1,0 +1,342 @@
+<!-- src/app/pages/inicio/inicio.html -->
+
+<!-- ── KEYBOARD ESCAPE HANDLER ─────────────────────────── -->
+<div (keydown)="onEscKey($event)" tabindex="-1" style="outline:none">
+
+  <!-- ══════════════════════════════════════════════
+       ANNOUNCEMENT BAR
+  ══════════════════════════════════════════════ -->
+  @if (announceVisible) {
+    <div class="announcement-bar" id="announcementBar">
+      <div class="announcement-inner">
+        <span>Envío gratis en compras superiores a $50.000</span>
+        <span class="sep">·</span>
+        <span>3 cuotas sin interés</span>
+        <span class="sep">·</span>
+        <span>Drop 02 disponible ahora</span>
+      </div>
+      <button class="announcement-close" (click)="closeAnnouncement()" aria-label="Cerrar">×</button>
+    </div>
+  }
+
+  <!-- ══════════════════════════════════════════════
+       NAVBAR
+  ══════════════════════════════════════════════ -->
+  <nav class="nav"
+       [class.scrolled]="navScrolled"
+       [class.announce-hidden]="!announceVisible">
+
+    <div class="nav-left">
+      <button class="nav-menu-btn"
+              [class.open]="mobileMenuOpen"
+              (click)="toggleMobileMenu()"
+              aria-label="Menú">
+        <span></span><span></span>
+      </button>
+      <ul class="nav-links">
+        <li><a href="#shop">Shop</a></li>
+        <li class="has-dropdown">
+          <a href="#">Colecciones</a>
+          <div class="dropdown">
+            <a href="#">Drop 01</a>
+            <a href="#">Drop 02</a>
+            <a href="#">Colección 25'</a>
+          </div>
+        </li>
+      </ul>
+    </div>
+
+    <a href="#" class="nav-logo">"BLESSED"</a>
+
+    <div class="nav-right">
+      <button class="nav-icon-btn" aria-label="Buscar">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+        </svg>
+      </button>
+      <button class="nav-icon-btn" aria-label="Cuenta">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+          <circle cx="12" cy="7" r="4"/>
+        </svg>
+      </button>
+      <button class="nav-icon-btn nav-cart-btn" (click)="openCart()" aria-label="Carrito">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
+          <line x1="3" y1="6" x2="21" y2="6"/>
+          <path d="M16 10a4 4 0 0 1-8 0"/>
+        </svg>
+        <span class="cart-badge">{{ cartCount }}</span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- ── MOBILE MENU ─────────────────────────────────────── -->
+  <div class="mobile-menu" [class.open]="mobileMenuOpen">
+    <div class="mobile-menu-inner">
+      <a href="#" class="mobile-nav-link" (click)="closeMobileMenu()">Shop</a>
+      <a href="#" class="mobile-nav-link" (click)="closeMobileMenu()">Drop 01</a>
+      <a href="#" class="mobile-nav-link" (click)="closeMobileMenu()">Drop 02</a>
+      <a href="#" class="mobile-nav-link" (click)="closeMobileMenu()">Colección 25'</a>
+      <a href="#" class="mobile-nav-link" (click)="closeMobileMenu()">Contacto</a>
+      <a href="#" class="mobile-nav-link" (click)="closeMobileMenu()">Guía de talles</a>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════
+       HERO — SPLIT FULL-SCREEN
+  ══════════════════════════════════════════════ -->
+  <section class="hero" id="hero">
+
+    <!-- Panel izquierdo -->
+    <div class="hero-panel hero-panel--left"
+         [style.flex]="getHeroPanelFlex('left')"
+         (mouseenter)="onHeroPanelEnter('left')"
+         (mouseleave)="onHeroPanelLeave()">
+      <div class="hero-panel-bg">
+        <img src="assets/IndexSlide-1.webp" alt="Drop 02" />
+      </div>
+      <div class="hero-panel-overlay"></div>
+      <div class="hero-panel-content hero-content--left">
+        <span class="hero-eyebrow">Nueva colección</span>
+        <h1 class="hero-title">DROP<br><em>02</em></h1>
+        <a href="#shop" class="btn-hero">Descubrí</a>
+      </div>
+    </div>
+
+    <!-- Línea divisoria central -->
+    <div class="hero-divider">
+      <span class="hero-logo-center">
+        <img src="assets/Logo1.png">
+      </span>
+    </div>
+
+    <!-- Panel derecho -->
+    <div class="hero-panel hero-panel--right"
+         [style.flex]="getHeroPanelFlex('right')"
+         (mouseenter)="onHeroPanelEnter('right')"
+         (mouseleave)="onHeroPanelLeave()">
+      <div class="hero-panel-bg">
+        <img src="assets/IndexSlide-2.webp" alt="Colección 25'" />
+      </div>
+      <div class="hero-panel-overlay"></div>
+      <div class="hero-panel-content hero-content--right">
+        <span class="hero-eyebrow">Temporada 2025</span>
+        <h1 class="hero-title">COLECCIÓN<br><em>25'</em></h1>
+        <a href="#productos" class="btn-hero">Explorar</a>
+      </div>
+    </div>
+
+    <!-- Scroll indicator -->
+    <div class="hero-scroll">
+      <span class="hero-scroll-line"></span>
+      <span class="hero-scroll-text">Scroll</span>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════
+       STATEMENT EDITORIAL
+  ══════════════════════════════════════════════ -->
+  <section class="statement">
+    <div class="statement-inner">
+      <p class="statement-text reveal" data-delay="0">
+        No es solo ropa.<br>
+        <em>Es una declaración.</em>
+      </p>
+    </div>
+  </section>
+
+  <!-- inicio.html -->
+  <app-big-item-for-index
+    (onAddToCart)="onFeatureAddToCart($event)">
+  </app-big-item-for-index>
+
+  <!-- ══════════════════════════════════════════════
+       FULL-BLEED — CAMPAÑA (estilo Zara)
+  ══════════════════════════════════════════════ -->
+  <section class="fullbleed reveal" data-delay="0">
+    <img src="assets/IndexSlide-1.webp" alt="Campaña Drop 02" />
+    <div class="fullbleed-caption">
+      <span class="fullbleed-tag">Colección 25'</span>
+      <h2 class="fullbleed-title">BLESSED<br><em>SS25</em></h2>
+      <a href="#productos" class="btn-white">Ver colección</a>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════
+       DOBLE IMAGEN (estilo editorial MADH)
+  ══════════════════════════════════════════════ -->
+  <section class="dual-image">
+    <div class="dual-item reveal" data-delay="0">
+      <div class="dual-img-wrap">
+        <img src="assets/Products/Product 2/product2-4.webp" alt="Bles Sed Tee" />
+      </div>
+      <div class="dual-info">
+        <h3 class="dual-title">"BLES SED" TEE</h3>
+        <div class="dual-pricing">
+          <span>$29.900</span>
+          <span class="price-old-sm">$46.000</span>
+        </div>
+        <a href="#" class="btn-link-sm">Ver producto →</a>
+      </div>
+    </div>
+
+    <div class="dual-item reveal" data-delay="180">
+      <div class="dual-img-wrap">
+        <img src="assets/Products/Product 2/product2-3.webp" alt="Essential Crewneck" />
+      </div>
+      <div class="dual-info">
+        <h3 class="dual-title">"ESSENTIAL" CREWNECK</h3>
+        <div class="dual-pricing">
+          <span>$45.000</span>
+          <span class="price-old-sm">$75.000</span>
+        </div>
+        <a href="#" class="btn-link-sm">Ver producto →</a>
+      </div>
+    </div>
+  </section>
+
+  
+
+  <!-- ══════════════════════════════════════════════
+       SEGUNDA FULLBLEED
+  ══════════════════════════════════════════════ -->
+  <section class="fullbleed fullbleed--light reveal" data-delay="0">
+    <img src="assets/IndexSlide-4.webp" alt="Editorial Colección 25'" />
+    <div class="fullbleed-caption fullbleed-caption--bottom-left">
+      <span class="fullbleed-tag">T-Shirts</span>
+      <h2 class="fullbleed-title">BÁSICOS<br><em>que hablan</em></h2>
+      <a href="#productos" class="btn-dark">Ver T-Shirts</a>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════
+       CART DRAWER
+  ══════════════════════════════════════════════ -->
+  <div class="cart-overlay"
+       [class.open]="cartOpen"
+       (click)="onOverlayClick()">
+  </div>
+
+  <aside class="cart-drawer" [class.open]="cartOpen">
+    <div class="cart-drawer-header">
+      <h2 class="cart-drawer-title">Carrito</h2>
+      <button class="cart-close" (click)="closeCart()">×</button>
+    </div>
+
+    <div class="cart-items">
+      @if (cart.length === 0) {
+        <div class="cart-empty">
+          <p>Tu carrito está vacío</p>
+          <a href="#shop" class="btn-link" (click)="closeCart()">Ir al shop</a>
+        </div>
+      } @else {
+        @for (item of cart; track item.id) {
+          <div class="cart-item">
+            <div class="cart-item-img">
+              <img src="assets/Products/Product 2/product2-2.webp" [alt]="item.product" />
+            </div>
+            <div>
+              <div class="cart-item-name">{{ item.product }}</div>
+              <div class="cart-item-size">Talle: {{ item.size }}</div>
+              <div class="cart-item-price">{{ formatPrice(item.price) }}</div>
+            </div>
+            <button class="cart-item-remove"
+                    (click)="removeFromCart(item.id)"
+                    aria-label="Eliminar">×</button>
+          </div>
+        }
+      }
+    </div>
+
+    @if (cart.length > 0) {
+      <div class="cart-footer">
+        <div class="cart-subtotal">
+          <span>Subtotal</span>
+          <span>{{ formatPrice(cartTotal) }}</span>
+        </div>
+        <p class="cart-note">Envío calculado al finalizar la compra</p>
+        <button class="btn-checkout">Finalizar compra</button>
+        <p class="cart-installments">{{ cartInstallments }}</p>
+      </div>
+    }
+  </aside>
+
+  <!-- ── TOAST ─────────────────────────────────────────────── -->
+  <div class="toast" [class.show]="toastVisible">{{ toastMessage }}</div>
+
+  <!-- ══════════════════════════════════════════════
+       CARRUSEL INSTAGRAM / MEDIA
+  ══════════════════════════════════════════════ -->
+  <igCarousel></igCarousel>
+
+  <!-- ══════════════════════════════════════════════
+       NEWSLETTER
+  ══════════════════════════════════════════════ -->
+  <section class="newsletter">
+    <div class="newsletter-inner reveal" data-delay="0">
+      <span class="label-tag">Comunidad</span>
+      <h2 class="newsletter-title">Become a<br><em>Crew Member</em></h2>
+      <p class="newsletter-sub">Suscribite para recibir los drops antes que nadie.</p>
+      <form class="newsletter-form" (ngSubmit)="onNewsletterSubmit()">
+        <input
+          type="email"
+          placeholder="tu@email.com"
+          class="newsletter-input"
+          [(ngModel)]="newsletterEmail"
+          name="email"
+          required
+        />
+        <button type="submit" class="newsletter-btn" [disabled]="newsletterLoading">
+          @if (newsletterLoading) { ... }
+          @else if (newsletterDone) { ✓ Suscripto }
+          @else { Suscribir }
+        </button>
+      </form>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════
+       FOOTER
+  ══════════════════════════════════════════════ -->
+  <footer class="footer">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <a href="#" class="footer-logo">"BLESSED"</a>
+        <p class="footer-tagline">
+          Streetwear de autor.<br>Buenos Aires, Argentina.
+        </p>
+        <div class="footer-socials">
+          <a href="#" aria-label="Instagram">Instagram</a>
+          <a href="#" aria-label="Facebook">Facebook</a>
+        </div>
+      </div>
+      <nav class="footer-nav">
+        <div class="footer-col">
+          <h4>Shop</h4>
+          <a href="#">T-Shirts</a>
+          <a href="#">Hoodies</a>
+          <a href="#">Crewnecks</a>
+          <a href="#">Drop 01</a>
+          <a href="#">Drop 02</a>
+        </div>
+        <div class="footer-col">
+          <h4>Ayuda</h4>
+          <a href="#">Guía de talles</a>
+          <a href="#">Envíos y devoluciones</a>
+          <a href="#">Contacto</a>
+          <a href="#">Defensa del consumidor</a>
+        </div>
+      </nav>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 "BLESSED" — Todos los derechos reservados</span>
+      <span>
+        <a href="#">Términos</a>
+        <a href="#">Privacidad</a>
+        <a href="#">Cookies</a>
+      </span>
+    </div>
+  </footer>
+
+</div><!-- /keydown wrapper -->
