@@ -1,0 +1,107 @@
+<!-- src/app/components/cart-drawer/cart-drawer.html -->
+
+<!-- Overlay -->
+<div
+  class="cart-overlay"
+  [class.open]="isOpen"
+  (click)="onOverlayClick()"
+  aria-hidden="true"
+></div>
+
+<!-- Drawer -->
+<aside
+  class="cart-drawer"
+  [class.open]="isOpen"
+  role="dialog"
+  aria-label="Carrito de compras"
+>
+
+  <!-- Header -->
+  <div class="cd-header">
+    <div class="cd-header-left">
+      <h2 class="cd-title">Carrito</h2>
+      @if (count > 0) {
+        <span class="cd-count">{{ count }}</span>
+      }
+    </div>
+    <button class="cd-close" (click)="close()" aria-label="Cerrar carrito">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+        <line x1="18" y1="6" x2="6" y2="18"/>
+        <line x1="6"  y1="6" x2="18" y2="18"/>
+      </svg>
+    </button>
+  </div>
+
+  <!-- Items -->
+  <div class="cd-items">
+
+    @if (items.length === 0) {
+      <div class="cd-empty">
+        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1">
+          <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
+          <line x1="3" y1="6" x2="21" y2="6"/>
+          <path d="M16 10a4 4 0 0 1-8 0"/>
+        </svg>
+        <p>Tu carrito está vacío</p>
+        <button class="cd-empty-link" (click)="close()">Ir al shop →</button>
+      </div>
+    }
+
+    @for (item of items; track item.id) {
+      <div class="cd-item">
+
+        <!-- Imagen -->
+        <div class="cd-item-img">
+          @if (item.image) {
+            <img [src]="item.image" [alt]="item.product" />
+          } @else {
+            <div class="cd-item-img-placeholder"></div>
+          }
+        </div>
+
+        <!-- Info -->
+        <div class="cd-item-info">
+          <p class="cd-item-name">{{ item.product }}</p>
+          <p class="cd-item-meta">
+            Talle: {{ item.size }}
+            @if (item.color) { · {{ item.color }} }
+          </p>
+          <p class="cd-item-price">{{ formatPrice(item.price) }}</p>
+
+          <!-- Cantidad -->
+          <div class="cd-qty">
+            <button class="cd-qty-btn" (click)="updateQty(item.id, -1)" aria-label="Quitar uno">−</button>
+            <span class="cd-qty-num">{{ item.quantity }}</span>
+            <button class="cd-qty-btn" (click)="updateQty(item.id, +1)" aria-label="Agregar uno">+</button>
+          </div>
+        </div>
+
+        <!-- Eliminar -->
+        <button class="cd-remove" (click)="remove(item.id)" aria-label="Eliminar producto">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <line x1="18" y1="6" x2="6" y2="18"/>
+            <line x1="6"  y1="6" x2="18" y2="18"/>
+          </svg>
+        </button>
+
+      </div>
+    }
+
+  </div>
+
+  <!-- Footer -->
+  @if (items.length > 0) {
+    <div class="cd-footer">
+      <div class="cd-subtotal">
+        <span>Subtotal</span>
+        <span class="cd-subtotal-price">{{ formatPrice(total) }}</span>
+      </div>
+      <p class="cd-installments">{{ installments }}</p>
+      <p class="cd-shipping-note">Envío calculado al finalizar la compra</p>
+      <button class="cd-checkout-btn">
+        Finalizar compra
+      </button>
+    </div>
+  }
+
+</aside>

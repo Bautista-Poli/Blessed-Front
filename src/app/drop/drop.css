@@ -1,0 +1,566 @@
+/* ═══════════════════════════════════════════════════════════
+   drop-landing.css  —  FIXED
+   - Sin dependencia de [data-drop] attribute
+   - Texto del hero siempre visible (opacity parte de 1 cuando
+     .visible no se aplicó todavía, como fallback)
+═══════════════════════════════════════════════════════════ */
+
+:host { display: block; }
+
+/* ── Variables con fallbacks seguros ─────────────────────── */
+:host {
+  --drop-white:  #f5f3ef;
+  --drop-off:    #1a1a18;
+  --drop-black:  #0a0a09;
+  --drop-mid:    #6b6b69;
+  --drop-light:  #2e2e2c;
+  --font-d:      'Playfair Display', serif;
+  --font-b:      'Tenor Sans', sans-serif;
+  --ease:        cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* ── Página ───────────────────────────────────────────────── */
+.drop-page {
+  background: var(--drop-black);
+  color: var(--drop-white);
+  min-height: 100vh;
+  font-family: var(--font-b);
+}
+
+/* ── Scroll reveal ────────────────────────────────────────── */
+.drop-reveal {
+  opacity: 0;
+  transform: translateY(32px);
+  transition: opacity 0.9s var(--ease), transform 0.9s var(--ease);
+}
+.drop-reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ══════════════════════════════════════════════════════════
+   HERO
+══════════════════════════════════════════════════════════ */
+.drop-hero {
+  position: relative;
+  height: 100vh;
+  min-height: 640px;
+  overflow: hidden;
+  display: flex;
+  align-items: flex-end;
+}
+
+/* ── Foto fondo ───────────────────────────────────────────── */
+.drop-hero-bg {
+  position: absolute;
+  inset: 0;
+  transform: scale(1.06);
+  transition: transform 1.4s var(--ease);
+}
+.drop-hero.visible .drop-hero-bg {
+  transform: scale(1);
+}
+.drop-hero-bg img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  object-position: center top;
+  display: block;
+}
+
+/* ── Overlay ──────────────────────────────────────────────── */
+.drop-hero-overlay {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(to top,  rgba(0,0,0,.92) 0%,  rgba(0,0,0,.5) 40%, rgba(0,0,0,.1) 70%),
+    linear-gradient(to right, rgba(0,0,0,.4) 0%, transparent 60%);
+  z-index: 1;
+}
+
+/* ── Número decorativo gigante ───────────────────────────── */
+.drop-hero-number {
+  position: absolute;
+  top: -0.05em;
+  right: -0.02em;
+  font-family: var(--font-d);
+  font-size: clamp(220px, 35vw, 480px);
+  font-weight: 700;
+  line-height: 0.85;
+  color: transparent;
+  -webkit-text-stroke: 1px rgba(255,255,255,0.06);
+  letter-spacing: -0.04em;
+  z-index: 1;
+  pointer-events: none;
+  user-select: none;
+  /* Animación de entrada — fallback: opacity 1 si .visible no llega */
+  opacity: 0;
+  transform: translateY(-20px);
+  transition: opacity 1.2s var(--ease) 0.3s, transform 1.2s var(--ease) 0.3s;
+}
+.drop-hero.visible .drop-hero-number {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ══════════════════════════════════════════════════════════
+   CONTENIDO DEL HERO
+   CRÍTICO: sin .visible, el texto igual se muestra (opacity: 1)
+   Con .visible, anima desde abajo para el efecto de entrada.
+══════════════════════════════════════════════════════════ */
+.drop-hero-content {
+  position: relative;
+  z-index: 2;
+  padding: 0 56px 72px;
+  max-width: 720px;
+}
+
+/* Eyebrow — SIEMPRE VISIBLE, anima si .visible está */
+.drop-eyebrow {
+  display: block;
+  font-size: 10px;
+  letter-spacing: 0.4em;
+  text-transform: uppercase;
+  color: var(--drop-white);
+  margin-bottom: 20px;
+  /* Sin animación de entrada — siempre visible */
+  opacity: 1;
+}
+
+/* Con .visible: efecto de entrada */
+.drop-hero.visible .drop-eyebrow {
+  animation: slideInLeft 0.8s var(--ease) 0.5s both;
+}
+
+@keyframes slideInLeft {
+  from { opacity: 0; transform: translateX(-16px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+/* Título — SIEMPRE VISIBLE */
+.drop-hero-title {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  margin-bottom: 28px;
+}
+
+.drop-hero-word {
+  display: block;
+  font-family: var(--font-d);
+  font-size: clamp(64px, 11vw, 148px);
+  font-weight: 500;
+  line-height: 0.9;
+  letter-spacing: -0.02em;
+  color: var(--drop-white);
+  text-shadow: 0 4px 40px rgba(0,0,0,0.5);
+  /* Sin animación de entrada — siempre visible */
+  opacity: 1;
+}
+
+.drop-hero-word:nth-child(2) {
+  font-style: italic;
+  font-weight: 400;
+  color: var(--drop-white);
+}
+
+/* Con .visible: efecto de entrada staggered */
+.drop-hero.visible .drop-hero-word:nth-child(1) {
+  animation: slideInUp 0.9s var(--ease) 0.6s both;
+}
+.drop-hero.visible .drop-hero-word:nth-child(2) {
+  animation: slideInUp 0.9s var(--ease) 0.75s both;
+}
+
+@keyframes slideInUp {
+  from { opacity: 0; transform: translateY(40px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Tagline — SIEMPRE VISIBLE */
+.drop-hero-tagline {
+  font-size: 14px;
+  line-height: 1.7;
+  color: rgba(255,255,255,0.55);
+  letter-spacing: 0.06em;
+  max-width: 380px;
+  margin-bottom: 36px;
+  opacity: 1;
+}
+.drop-hero.visible .drop-hero-tagline {
+  animation: fadeIn 0.8s var(--ease) 1s both;
+}
+
+/* Meta datos — SIEMPRE VISIBLE */
+.drop-hero-meta {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+  margin-bottom: 40px;
+  opacity: 1;
+}
+.drop-hero.visible .drop-hero-meta {
+  animation: fadeIn 0.8s var(--ease) 1.1s both;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.drop-meta-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.drop-meta-label {
+  font-size: 9px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.35);
+}
+.drop-meta-val {
+  font-family: var(--font-d);
+  font-size: 18px;
+  color: var(--drop-white);
+}
+.drop-meta-divider {
+  width: 1px;
+  height: 36px;
+  background: rgba(255,255,255,0.15);
+}
+
+/* CTA — SIEMPRE VISIBLE */
+.drop-hero-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 11px;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--drop-white);
+  border: 1px solid rgba(255,255,255,0.3);
+  padding: 14px 28px;
+  opacity: 1;
+  transition: background 0.3s, border-color 0.3s, color 0.3s;
+}
+.drop-hero.visible .drop-hero-cta {
+  animation: fadeIn 0.8s var(--ease) 1.2s both;
+}
+.drop-hero-cta:hover {
+  background: var(--drop-white);
+  border-color: var(--drop-white);
+  color: var(--drop-black);
+}
+
+/* Scroll hint */
+.drop-scroll-hint {
+  position: absolute;
+  bottom: 28px; left: 50%;
+  transform: translateX(-50%);
+  z-index: 2;
+}
+.drop-scroll-hint span {
+  display: block;
+  width: 1px; height: 52px;
+  background: rgba(255,255,255,0.3);
+  transform-origin: top;
+  animation: dropScroll 2.2s var(--ease) infinite;
+}
+@keyframes dropScroll {
+  0%   { transform: scaleY(0); opacity: 0; }
+  40%  { opacity: 1; }
+  100% { transform: scaleY(1); opacity: 0; }
+}
+
+/* ══════════════════════════════════════════════════════════
+   STATEMENT
+══════════════════════════════════════════════════════════ */
+.drop-statement {
+  padding: 110px 56px;
+  border-bottom: 1px solid var(--drop-light);
+}
+.drop-statement-inner {
+  max-width: 860px;
+  display: flex;
+  align-items: flex-start;
+  gap: 48px;
+}
+.drop-statement-text {
+  font-family: var(--font-d);
+  font-size: clamp(22px, 3vw, 36px);
+  font-weight: 400;
+  line-height: 1.5;
+  color: rgba(255,255,255,0.8);
+  letter-spacing: 0.01em;
+  flex: 1;
+}
+.drop-statement-line {
+  width: 1px; height: 80px;
+  background: var(--drop-white);
+  flex-shrink: 0;
+  margin-top: 6px;
+}
+
+/* ══════════════════════════════════════════════════════════
+   SPLIT
+══════════════════════════════════════════════════════════ */
+.drop-split {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  min-height: 80vh;
+  border-bottom: 1px solid var(--drop-light);
+}
+.drop-split-img {
+  overflow: hidden;
+}
+.drop-split-img img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  object-position: center top;
+  display: block;
+  transition: transform 0.8s var(--ease);
+}
+.drop-split:hover .drop-split-img img { transform: scale(1.03); }
+
+.drop-split-body {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 80px 72px;
+}
+.drop-split-tag {
+  font-size: 10px;
+  letter-spacing: 0.36em;
+  text-transform: uppercase;
+  color: var(--drop-white);
+  margin-bottom: 24px;
+  display: block;
+}
+.drop-split-title {
+  font-family: var(--font-d);
+  font-size: clamp(36px, 4.5vw, 58px);
+  font-weight: 400;
+  line-height: 1.1;
+  color: var(--drop-white);
+  margin-bottom: 28px;
+}
+.drop-split-title em {
+  font-style: italic;
+  display: block;
+  color: var(--drop-white);
+}
+.drop-split-text {
+  font-size: 14px;
+  line-height: 1.85;
+  color: rgba(255,255,255,0.5);
+  letter-spacing: 0.04em;
+  max-width: 380px;
+  margin-bottom: 36px;
+}
+.drop-split-link {
+  font-size: 11px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--drop-white);
+  border-bottom: 1px solid var(--drop-white);
+  padding-bottom: 4px;
+  display: inline-block;
+  transition: color 0.2s;
+  width: fit-content;
+}
+.drop-split-link:hover { color: var(--drop-white); }
+
+/* ══════════════════════════════════════════════════════════
+   PRODUCT GRID
+══════════════════════════════════════════════════════════ */
+.drop-products {
+  padding: 80px 0 120px;
+}
+.drop-products-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  padding: 0 56px 48px;
+  border-bottom: 1px solid var(--drop-light);
+  margin-bottom: 2px;
+}
+.drop-products-title {
+  font-family: var(--font-d);
+  font-size: clamp(32px, 4vw, 52px);
+  font-weight: 400;
+  color: var(--drop-white);
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.drop-products-count {
+  font-size: 14px;
+  letter-spacing: 0.1em;
+  color: var(--drop-white);
+  font-family: var(--font-b);
+  border: 1px solid var(--drop-white);
+  padding: 4px 12px;
+}
+.drop-products-link {
+  font-size: 11px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.45);
+  border-bottom: 1px solid currentColor;
+  padding-bottom: 2px;
+  transition: color 0.2s;
+}
+.drop-products-link:hover { color: var(--drop-white); }
+
+/* Grilla */
+.drop-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2px;
+  background: var(--drop-light);
+  padding: 2px;
+}
+
+/* ── Card ─────────────────────────────────────────────────── */
+.drop-card {
+  background: var(--drop-off);
+  cursor: pointer;
+  overflow: hidden;
+}
+.drop-card-img-wrap {
+  position: relative;
+  aspect-ratio: 3 / 4;
+  overflow: hidden;
+  background: #141413;
+}
+.drop-card-img-main,
+.drop-card-img-hover {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  object-position: top;
+  display: block;
+}
+.drop-card-img-main {
+  transition: opacity 0.45s var(--ease), transform 0.65s var(--ease);
+}
+.drop-card-img-hover {
+  position: absolute; inset: 0;
+  opacity: 0;
+  transition: opacity 0.45s var(--ease);
+}
+.drop-card:hover .drop-card-img-main  { opacity: 0; transform: scale(1.03); }
+.drop-card:hover .drop-card-img-hover { opacity: 1; }
+
+/* Badges */
+.drop-card-badges {
+  position: absolute;
+  top: 12px; left: 12px;
+  display: flex; gap: 5px;
+  z-index: 3;
+}
+.drop-badge {
+  font-family: var(--font-b);
+  font-size: 9px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  padding: 4px 8px;
+  font-weight: 600;
+}
+.drop-badge--new  { background: var(--drop-white); color: var(--drop-black); }
+.drop-badge--sale { background: #c0392b; color: #fff; }
+
+/* Hover overlay */
+.drop-card-hover {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  padding: 14px;
+  background: rgba(10,10,9,0.95);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  transform: translateY(100%);
+  transition: transform 0.32s var(--ease);
+  z-index: 4;
+}
+.drop-card:hover .drop-card-hover { transform: translateY(0); }
+
+.drop-card-sizes { display: flex; gap: 4px; }
+.drop-size-btn {
+  width: 30px; height: 30px;
+  border: 1px solid var(--drop-light);
+  font-family: var(--font-b);
+  font-size: 10px;
+  color: rgba(255,255,255,0.6);
+  background: none;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s, color 0.15s;
+}
+.drop-size-btn:hover  { border-color: var(--drop-white); color: var(--drop-white); }
+.drop-size-btn.active { background: var(--drop-white); border-color: var(--drop-white); color: var(--drop-black); }
+
+.drop-add-btn {
+  font-family: var(--font-b);
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  border: 1px solid var(--drop-white);
+  padding: 8px 14px;
+  color: var(--drop-white);
+  background: none;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.2s, color 0.2s;
+}
+.drop-add-btn:hover { background: var(--drop-white); border-color: var(--drop-white); color: var(--drop-black); }
+
+/* Info */
+.drop-card-info {
+  padding: 14px 16px 20px;
+  cursor: pointer;
+}
+.drop-card-name {
+  font-family: var(--font-b);
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.75);
+  margin-bottom: 7px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.drop-card-pricing { display: flex; gap: 10px; align-items: baseline; }
+.drop-price {
+  font-family: var(--font-d);
+  font-size: 16px;
+  color: var(--drop-white);
+}
+.drop-price-old {
+  font-size: 12px;
+  color: var(--drop-mid);
+  text-decoration: line-through;
+}
+
+/* ══════════════════════════════════════════════════════════
+   RESPONSIVE
+══════════════════════════════════════════════════════════ */
+@media (max-width: 1024px) {
+  .drop-grid { grid-template-columns: repeat(2, 1fr); }
+  .drop-split { grid-template-columns: 1fr; }
+  .drop-split-img { aspect-ratio: 16 / 9; }
+  .drop-split-body { padding: 56px 40px; }
+}
+@media (max-width: 768px) {
+  .drop-hero-content { padding: 0 28px 56px; }
+  .drop-hero-number  { font-size: clamp(140px, 42vw, 260px); }
+  .drop-hero-meta    { gap: 18px; flex-wrap: wrap; }
+  .drop-statement    { padding: 72px 28px; }
+  .drop-statement-inner { flex-direction: column; gap: 24px; }
+  .drop-products-header { padding: 0 28px 36px; flex-direction: column; gap: 16px; }
+  .drop-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 480px) {
+  .drop-grid { grid-template-columns: 1fr; }
+  .drop-hero-content { padding: 0 20px 48px; }
+}

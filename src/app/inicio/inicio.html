@@ -34,12 +34,12 @@
         <span></span><span></span>
       </button>
       <ul class="nav-links">
-        <li><a href="#shop">Shop</a></li>
+        <li><a routerLink="/catalog">Shop</a></li>
         <li class="has-dropdown">
           <a href="#">Colecciones</a>
           <div class="dropdown">
-            <a href="#">Drop 01</a>
-            <a href="#">Drop 02</a>
+            <a href="/drop1">Drop 01</a>
+            <a href="/drop2">Drop 02</a>
             <a href="#">Colección 25'</a>
           </div>
         </li>
@@ -75,8 +75,8 @@
   <div class="mobile-menu" [class.open]="mobileMenuOpen">
     <div class="mobile-menu-inner">
       <a href="#" class="mobile-nav-link" (click)="closeMobileMenu()">Shop</a>
-      <a href="#" class="mobile-nav-link" (click)="closeMobileMenu()">Drop 01</a>
-      <a href="#" class="mobile-nav-link" (click)="closeMobileMenu()">Drop 02</a>
+      <a href="/drop1" class="mobile-nav-link" (click)="closeMobileMenu()">Drop 01</a>
+      <a href="/drop2" class="mobile-nav-link" (click)="closeMobileMenu()">Drop 02</a>
       <a href="#" class="mobile-nav-link" (click)="closeMobileMenu()">Colección 25'</a>
       <a href="#" class="mobile-nav-link" (click)="closeMobileMenu()">Contacto</a>
       <a href="#" class="mobile-nav-link" (click)="closeMobileMenu()">Guía de talles</a>
@@ -100,7 +100,7 @@
       <div class="hero-panel-content hero-content--left">
         <span class="hero-eyebrow">Nueva colección</span>
         <h1 class="hero-title">DROP<br><em>02</em></h1>
-        <a href="#shop" class="btn-hero">Descubrí</a>
+        <a href="/drop2" class="btn-hero">Descubrí</a>
       </div>
     </div>
 
@@ -123,7 +123,7 @@
       <div class="hero-panel-content hero-content--right">
         <span class="hero-eyebrow">Temporada 2025</span>
         <h1 class="hero-title">COLECCIÓN<br><em>25'</em></h1>
-        <a href="#productos" class="btn-hero">Explorar</a>
+        <a href="/drop1" class="btn-hero">Explorar</a>
       </div>
     </div>
 
@@ -213,54 +213,7 @@
   <!-- ══════════════════════════════════════════════
        CART DRAWER
   ══════════════════════════════════════════════ -->
-  <div class="cart-overlay"
-       [class.open]="cartOpen"
-       (click)="onOverlayClick()">
-  </div>
-
-  <aside class="cart-drawer" [class.open]="cartOpen">
-    <div class="cart-drawer-header">
-      <h2 class="cart-drawer-title">Carrito</h2>
-      <button class="cart-close" (click)="closeCart()">×</button>
-    </div>
-
-    <div class="cart-items">
-      @if (cart.length === 0) {
-        <div class="cart-empty">
-          <p>Tu carrito está vacío</p>
-          <a href="#shop" class="btn-link" (click)="closeCart()">Ir al shop</a>
-        </div>
-      } @else {
-        @for (item of cart; track item.id) {
-          <div class="cart-item">
-            <div class="cart-item-img">
-              <img src="assets/Products/Product 2/product2-2.webp" [alt]="item.product" />
-            </div>
-            <div>
-              <div class="cart-item-name">{{ item.product }}</div>
-              <div class="cart-item-size">Talle: {{ item.size }}</div>
-              <div class="cart-item-price">{{ formatPrice(item.price) }}</div>
-            </div>
-            <button class="cart-item-remove"
-                    (click)="removeFromCart(item.id)"
-                    aria-label="Eliminar">×</button>
-          </div>
-        }
-      }
-    </div>
-
-    @if (cart.length > 0) {
-      <div class="cart-footer">
-        <div class="cart-subtotal">
-          <span>Subtotal</span>
-          <span>{{ formatPrice(cartTotal) }}</span>
-        </div>
-        <p class="cart-note">Envío calculado al finalizar la compra</p>
-        <button class="btn-checkout">Finalizar compra</button>
-        <p class="cart-installments">{{ cartInstallments }}</p>
-      </div>
-    }
-  </aside>
+  <app-cart-drawer></app-cart-drawer>
 
   <!-- ── TOAST ─────────────────────────────────────────────── -->
   <div class="toast" [class.show]="toastVisible">{{ toastMessage }}</div>

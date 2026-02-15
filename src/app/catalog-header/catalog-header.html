@@ -1,0 +1,46 @@
+<header class="cat-header">
+  <div class="cat-header-top">
+    
+    <div class="header-left">
+      <h1 class="cat-title">{{ title }} <small>({{ visibleCount }})</small></h1>
+    </div>
+
+    <div class="header-center">
+      <a [routerLink]="['/']" class="nav-logo-link">
+        <img src="assets/Logo2.webp" alt="Blessed Logo" class="logo-img" />
+      </a>
+    </div>
+
+    <div class="header-right">
+      <div class="cat-controls">
+        <button class="nav-icon-btn nav-cart-btn" (click)="toggleCart()">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
+            <line x1="3" y1="6" x2="21" y2="6"/>
+            <path d="M16 10a4 4 0 0 1-8 0"/>
+          </svg>
+          @if (cartCount > 0) {
+            <span class="cart-badge">{{ cartCount }}</span>
+          }
+        </button>
+
+        <div class="cat-view-btns">
+          <button [class.active]="gridView === '2col'" (click)="onSetView('2col')">2</button>
+          <button [class.active]="gridView === '4col'" (click)="onSetView('4col')">4</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="cat-filters">
+    @for (f of filters; track f.value) {
+      <button 
+        class="cat-pill" 
+        [class.active]="activeFilter === f.value"
+        (click)="onSetFilter(f.value)">
+        {{ f.label }}
+      </button>
+    }
+  </div>
+</header>

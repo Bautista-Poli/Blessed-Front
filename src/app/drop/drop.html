@@ -1,0 +1,173 @@
+<!-- src/app/drop/drop.html -->
+
+<catalog-header
+    [title]="config.label"
+    [filters]="filters"
+    [activeFilter]="activeFilter"
+    [sortOptions]="sortOptions"
+    [activeSort]="activeSort"
+    [sortOpen]="sortOpen"
+    [gridView]="gridView"
+    (filterChanged)="setFilter($event)" 
+    (sortChanged)="setSort($event)"
+    (toggleSort)="toggleSort()"
+    (viewChanged)="setGridView($event)"
+  ></catalog-header>
+
+<div class="drop-page" [attr.data-drop]="config.id">
+
+  <!-- ══════════════════════════════════════════════════════
+       HERO
+  ══════════════════════════════════════════════════════ -->
+  <section class="drop-hero" [class.visible]="heroVisible">
+
+    <div class="drop-hero-bg">
+      <img [src]="config.heroImage" [alt]="config.label" />
+    </div>
+
+    <div class="drop-hero-overlay"></div>
+
+    <div class="drop-hero-number" aria-hidden="true">{{ config.number }}</div>
+
+    <div class="drop-hero-content">
+      <span class="drop-eyebrow">{{ config.label }}</span>
+
+      <h1 class="drop-hero-title">
+        <span class="drop-hero-word">BLESSED</span>
+        <em class="drop-hero-word">DROP</em>
+      </h1>
+
+      <p class="drop-hero-tagline">{{ config.tagline }}</p>
+
+      <div class="drop-hero-meta">
+        <div class="drop-meta-item">
+          <span class="drop-meta-label">Piezas</span>
+          <span class="drop-meta-val">{{ config.totalPieces }}</span>
+        </div>
+        <div class="drop-meta-divider"></div>
+        <div class="drop-meta-item">
+          <span class="drop-meta-label">Temporada</span>
+          <span class="drop-meta-val">{{ config.releaseDate }}</span>
+        </div>
+        <div class="drop-meta-divider"></div>
+        <div class="drop-meta-item">
+          <span class="drop-meta-label">Disponible</span>
+          <span class="drop-meta-val">Ahora</span>
+        </div>
+      </div>
+
+      <a class="drop-hero-cta" href="#drop-products">
+        Ver la colección
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <line x1="12" y1="5" x2="12" y2="19"/>
+          <polyline points="19 12 12 19 5 12"/>
+        </svg>
+      </a>
+    </div>
+
+    <div class="drop-scroll-hint"><span></span></div>
+
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════
+       STATEMENT
+  ══════════════════════════════════════════════════════ -->
+  <section class="drop-statement drop-reveal">
+    <div class="drop-statement-inner">
+      <p class="drop-statement-text">{{ config.description }}</p>
+      <div class="drop-statement-line"></div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════
+       SPLIT
+  ══════════════════════════════════════════════════════ -->
+  @if (config.heroImage2) {
+    <section class="drop-split drop-reveal">
+      <div class="drop-split-img">
+        <img [src]="config.heroImage2" [alt]="config.label" />
+      </div>
+      <div class="drop-split-body">
+        <span class="drop-split-tag">Drop {{ config.number }}</span>
+        <h2 class="drop-split-title">Cada pieza,<br><em>una intención.</em></h2>
+        <p class="drop-split-text">
+          {{ itemCount }} piezas cuidadosamente seleccionadas que definen
+          la identidad del drop. Materiales premium, construcción local,
+          edición limitada.
+        </p>
+        <!-- Link al catálogo — navega a /catalog (ruta existente) -->
+        <a routerLink="/catalog" class="drop-split-link">
+          Ver todas las piezas →
+        </a>
+      </div>
+    </section>
+  }
+
+  <!-- ══════════════════════════════════════════════════════
+       PRODUCT GRID
+  ══════════════════════════════════════════════════════ -->
+  <section class="drop-products" id="drop-products">
+
+    <div class="drop-products-header drop-reveal">
+      <h2 class="drop-products-title">
+        Las piezas
+        <span class="drop-products-count">{{ itemCount }}</span>
+      </h2>
+      <!-- ✅ Ruta correcta: /catalog (no /catalog/config.id que no existe) -->
+      <a routerLink="/catalog" class="drop-products-link">
+        Ver catálogo completo →
+      </a>
+    </div>
+
+    <div class="drop-grid" [class.view-2]="gridView === '2col'" [class.view-4]="gridView === '4col'">
+      @for (p of orderedProducts; track p.id) {
+        <article class="drop-card drop-reveal">
+
+          <div class="drop-card-img-wrap" [routerLink]="['/product', p.id]">
+            <img class="drop-card-img-main"  [src]="p.image"      [alt]="p.name" loading="lazy" />
+            @if (p.imageHover) {
+              <img class="drop-card-img-hover" [src]="p.imageHover" [alt]="p.name" loading="lazy" />
+            }
+
+            <div class="drop-card-badges">
+              @if (p.isNew) {
+                <span class="drop-badge drop-badge--new">NEW</span>
+              }
+              @if (p.isSale && p.originalPrice !== p.price) {
+                <span class="drop-badge drop-badge--sale">−{{ discount(p) }}%</span>
+              }
+            </div>
+
+            <div class="drop-card-hover">
+              <div class="drop-card-sizes">
+                @for (s of sizes; track s) {
+                  <button
+                    class="drop-size-btn"
+                    [class.active]="isSizeSelected(p.id, s)"
+                    (click)="selectSize(p.id, s, $event)"
+                  >{{ s }}</button>
+                }
+              </div>
+              <button class="drop-add-btn" (click)="onAddClick(p, $event)">
+                Agregar
+              </button>
+            </div>
+          </div>
+
+          <div class="drop-card-info" [routerLink]="['/product', p.id]">
+            <h3 class="drop-card-name">{{ p.name }}</h3>
+            <div class="drop-card-pricing">
+              <span class="drop-price">{{ formatPrice(p.price) }}</span>
+              @if (p.isSale && p.originalPrice !== p.price) {
+                <span class="drop-price-old">{{ formatPrice(p.originalPrice) }}</span>
+              }
+            </div>
+          </div>
+
+        </article>
+      }
+    </div>
+
+  </section>
+
+</div>
