@@ -98,7 +98,8 @@
       </div>
       <p class="cd-installments">{{ installments }}</p>
       <p class="cd-shipping-note">Envío calculado al finalizar la compra</p>
-      <button class="cd-checkout-btn">
+      <!-- En cart-drawer.html, reemplazá el botón existente -->
+      <button class="cd-checkout-btn" (click)="goToCheckout()">
         Finalizar compra
       </button>
     </div>

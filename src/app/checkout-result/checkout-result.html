@@ -1,0 +1,22 @@
+<div class="result-page" [attr.data-status]="status()">
+
+  <div class="result-card">
+
+    <div class="result-icon">
+      <span>{{ config().icon }}</span>
+    </div>
+
+    <h1 class="result-title">{{ config().title }}</h1>
+    <p class="result-subtitle">{{ config().subtitle }}</p>
+
+    @if (paymentId()) {
+      <p class="result-id">ID de pago: {{ paymentId() }}</p>
+    }
+
+    <button class="result-btn" (click)="navigate()">
+      {{ config().btnLabel }}
+    </button>
+
+  </div>
+
+</div>

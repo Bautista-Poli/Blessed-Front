@@ -1,7 +1,7 @@
 // src/app/components/cart-drawer/cart-drawer.ts
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject } from '@angular/core';
 import { CommonModule }                 from '@angular/common';
-import { RouterModule }                 from '@angular/router';
+import { Router, RouterModule }                 from '@angular/router';
 import { Subscription }                 from 'rxjs';
 import { CartItem, CartService } from '../../cart.service';
 
@@ -18,6 +18,7 @@ export class CartDrawer implements OnInit, OnDestroy {
   // No necesita @Input() de ningún padre
   items:  CartItem[] = [];
   isOpen  = false;
+  private router = inject(Router);
 
   private subs = new Subscription();
 
@@ -55,5 +56,11 @@ export class CartDrawer implements OnInit, OnDestroy {
 
   formatPrice(n: number): string {
     return this.cart.formatPrice(n);
+  }
+  
+
+  goToCheckout() {
+    this.close();
+    this.router.navigate(['/checkout']);
   }
 }

@@ -1,0 +1,104 @@
+<!-- src/app/pages/checkout/checkout.component.html -->
+<div class="checkout-page">
+
+  <div class="ck-container">
+
+    <!-- Columna izquierda: resumen -->
+    <section class="ck-summary">
+      <h1 class="ck-title">Resumen del pedido</h1>
+
+      <div class="ck-items">
+        @for (item of items(); track item.id) {
+          <div class="ck-item">
+            <div class="ck-item-img">
+              @if (item.image) {
+                <img [src]="item.image" [alt]="item.product" />
+              } @else {
+                <div class="ck-item-img-placeholder"></div>
+              }
+              <span class="ck-item-badge">{{ item.quantity }}</span>
+            </div>
+            <div class="ck-item-info">
+              <p class="ck-item-name">{{ item.product }}</p>
+              <p class="ck-item-meta">Talle: {{ item.size }}{{ item.color ? ' · ' + item.color : '' }}</p>
+            </div>
+            <p class="ck-item-price">{{ formatPrice(item.price * item.quantity) }}</p>
+          </div>
+        }
+      </div>
+
+      <div class="ck-divider"></div>
+
+      <div class="ck-totals">
+        <div class="ck-row">
+          <span>Subtotal</span>
+          <span>{{ formatPrice(total()) }}</span>
+        </div>
+        <div class="ck-row">
+          <span>Envío</span>
+          <span class="ck-shipping-pending">Calculado al pagar</span>
+        </div>
+        <div class="ck-row ck-row--total">
+          <span>Total</span>
+          <span>{{ formatPrice(total()) }}</span>
+        </div>
+        <p class="ck-installments">{{ installments() }}</p>
+      </div>
+    </section>
+
+    <!-- Columna derecha: acción -->
+    <section class="ck-payment">
+      <h2 class="ck-payment-title">Método de pago</h2>
+
+      <!-- Métodos aceptados -->
+      <div class="ck-methods">
+        <p class="ck-methods-label">Aceptamos</p>
+        <div class="ck-methods-logos">
+          <!-- Mercado Pago badge oficial -->
+          <img
+            src="https://www.mercadopago.com/org-img/MP3/home/logomp.gif"
+            alt="Mercado Pago"
+            class="ck-mp-logo"
+          />
+        </div>
+        <p class="ck-methods-desc">
+          Tarjetas de crédito, débito, transferencia, efectivo y más a través de Mercado Pago.
+        </p>
+      </div>
+
+      @if (error()) {
+        <div class="ck-error">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <circle cx="12" cy="12" r="10"/>
+            <line x1="12" y1="8" x2="12" y2="12"/>
+            <line x1="12" y1="16" x2="12.01" y2="16"/>
+          </svg>
+          {{ error() }}
+        </div>
+      }
+
+      <button
+        class="ck-pay-btn"
+        (click)="goToPayment()"
+        [disabled]="loading()"
+      >
+        @if (loading()) {
+          <span class="ck-spinner"></span>
+          Procesando...
+        } @else {
+          Pagar con Mercado Pago
+        }
+      </button>
+
+      <p class="ck-secure">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+          <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+        </svg>
+        Pago 100% seguro
+      </p>
+    </section>
+
+  </div>
+
+</div>
