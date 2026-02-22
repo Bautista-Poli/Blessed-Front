@@ -15,12 +15,14 @@ export interface CartItem {
 
 export interface CheckoutResponse {
   init_point: string; // URL de Mercado Pago
+  sandbox_init_point: string;
+  preference_id: string;
 }
 
 @Injectable({ providedIn: 'root' })
 export class CheckoutService {
   private http = inject(HttpClient);
-  private apiUrl = 'http://localhost:3000/api'; // cambiá por tu URL de producción
+  private apiUrl = 'https://blessed-back-production.up.railway.app/api';
 
   createPreference(items: CartItem[]): Observable<CheckoutResponse> {
     return this.http.post<CheckoutResponse>(`${this.apiUrl}/checkout`, { items });

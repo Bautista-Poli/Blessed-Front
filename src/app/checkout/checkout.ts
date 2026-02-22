@@ -12,6 +12,7 @@ import { CartService, CartItem } from '../../cart.service';
   templateUrl: './checkout.html',
   styleUrl: './checkout.css'
 })
+
 export class CheckoutComponent implements OnInit {
   private checkoutService = inject(CheckoutService);
   private cartService     = inject(CartService);
@@ -55,7 +56,8 @@ export class CheckoutComponent implements OnInit {
 
     this.checkoutService.createPreference(this.items()).subscribe({
       next: (res) => {
-        window.location.href = res.init_point;
+        //window.location.href = res.init_point;
+        window.location.href = res.sandbox_init_point;
       },
       error: (err) => {
         console.error(err);
