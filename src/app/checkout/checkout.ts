@@ -207,7 +207,7 @@ export class CheckoutComponent implements OnInit {
       }
     }).subscribe({
       next: (res) => {
-        window.location.href = res.sandbox_init_point;
+        window.location.href = res.init_point;
       },
       error: (err) => {
         console.error(err);
