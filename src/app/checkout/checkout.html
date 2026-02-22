@@ -1,103 +1,352 @@
-<!-- src/app/pages/checkout/checkout.component.html -->
-<div class="checkout-page">
+<!-- checkout.html -->
+<div class="ck-page">
 
-  <div class="ck-container">
+  <!-- ── HEADER ──────────────────────────────────────────── -->
+  <header class="ck-header">
+    <a href="/" class="ck-logo">"BLESSED"</a>
 
-    <!-- Columna izquierda: resumen -->
-    <section class="ck-summary">
-      <h1 class="ck-title">Resumen del pedido</h1>
-
-      <div class="ck-items">
-        @for (item of items(); track item.id) {
-          <div class="ck-item">
-            <div class="ck-item-img">
-              @if (item.image) {
-                <img [src]="item.image" [alt]="item.product" />
-              } @else {
-                <div class="ck-item-img-placeholder"></div>
-              }
-              <span class="ck-item-badge">{{ item.quantity }}</span>
-            </div>
-            <div class="ck-item-info">
-              <p class="ck-item-name">{{ item.product }}</p>
-              <p class="ck-item-meta">Talle: {{ item.size }}{{ item.color ? ' · ' + item.color : '' }}</p>
-            </div>
-            <p class="ck-item-price">{{ formatPrice(item.price * item.quantity) }}</p>
+    <nav class="ck-steps">
+      @for (s of steps; track s.id; let i = $index) {
+        <div class="ck-step" [class.active]="step() === s.id" [class.done]="isStepCompleted(s.id)">
+          <div class="ck-step-dot">
+            @if (isStepCompleted(s.id)) {
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <polyline points="20 6 9 17 4 12"/>
+              </svg>
+            } @else {
+              {{ i + 1 }}
+            }
           </div>
+          <span class="ck-step-label">{{ s.label }}</span>
+        </div>
+        @if (i < steps.length - 1) {
+          <div class="ck-step-line" [class.done]="isStepCompleted(s.id)"></div>
         }
-      </div>
+      }
+    </nav>
+  </header>
 
-      <div class="ck-divider"></div>
+  <!-- ── BODY ────────────────────────────────────────────── -->
+  <div class="ck-body">
 
-      <div class="ck-totals">
-        <div class="ck-row">
-          <span>Subtotal</span>
-          <span>{{ formatPrice(total()) }}</span>
-        </div>
-        <div class="ck-row">
-          <span>Envío</span>
-          <span class="ck-shipping-pending">Calculado al pagar</span>
-        </div>
-        <div class="ck-row ck-row--total">
-          <span>Total</span>
-          <span>{{ formatPrice(total()) }}</span>
-        </div>
-        <p class="ck-installments">{{ installments() }}</p>
-      </div>
-    </section>
+    <!-- Columna izquierda: formularios -->
+    <div class="ck-left">
 
-    <!-- Columna derecha: acción -->
-    <section class="ck-payment">
-      <h2 class="ck-payment-title">Método de pago</h2>
+      <!-- ══ PASO 1: CONTACTO ══════════════════════════════ -->
+      @if (step() === 'contacto') {
+        <section class="ck-section">
+          <h2 class="ck-section-title">Datos de contacto</h2>
 
-      <!-- Métodos aceptados -->
-      <div class="ck-methods">
-        <p class="ck-methods-label">Aceptamos</p>
-        <div class="ck-methods-logos">
-          <!-- Mercado Pago badge oficial -->
-          <img
-            src="https://www.mercadopago.com/org-img/MP3/home/logomp.gif"
-            alt="Mercado Pago"
-            class="ck-mp-logo"
-          />
-        </div>
-        <p class="ck-methods-desc">
-          Tarjetas de crédito, débito, transferencia, efectivo y más a través de Mercado Pago.
-        </p>
-      </div>
+          <form [formGroup]="contactForm" (ngSubmit)="submitContacto()" novalidate>
+            <div class="ck-field" [class.error]="fieldError(contactForm, 'email')">
+              <label class="ck-label">E-mail</label>
+              <input class="ck-input" type="email" formControlName="email" placeholder="tu@email.com" />
+              @if (fieldError(contactForm, 'email')) {
+                <span class="ck-field-error">Ingresá un e-mail válido</span>
+              }
+            </div>
 
-      @if (error()) {
-        <div class="ck-error">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-            <circle cx="12" cy="12" r="10"/>
-            <line x1="12" y1="8" x2="12" y2="12"/>
-            <line x1="12" y1="16" x2="12.01" y2="16"/>
-          </svg>
-          {{ error() }}
-        </div>
+            <label class="ck-checkbox">
+              <input type="checkbox" formControlName="newsletter" />
+              <span>Quiero recibir novedades y drops por e-mail</span>
+            </label>
+
+            <button type="submit" class="ck-btn-primary">
+              Continuar con la entrega
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                <line x1="5" y1="12" x2="19" y2="12"/>
+                <polyline points="12 5 19 12 12 19"/>
+              </svg>
+            </button>
+          </form>
+        </section>
       }
 
-      <button
-        class="ck-pay-btn"
-        (click)="goToPayment()"
-        [disabled]="loading()"
-      >
-        @if (loading()) {
-          <span class="ck-spinner"></span>
-          Procesando...
-        } @else {
-          Pagar con Mercado Pago
-        }
-      </button>
+      <!-- ══ PASO 2: ENTREGA ════════════════════════════════ -->
+      @if (step() === 'entrega') {
+        <section class="ck-section">
+          <h2 class="ck-section-title">Datos de entrega</h2>
 
-      <p class="ck-secure">
-        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-          <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
-          <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
-        </svg>
-        Pago 100% seguro
-      </p>
-    </section>
+          <form [formGroup]="deliveryForm" (ngSubmit)="submitEntrega()" novalidate>
+
+            <!-- Nombre y apellido -->
+            <div class="ck-row-2">
+              <div class="ck-field" [class.error]="fieldError(deliveryForm, 'nombre')">
+                <label class="ck-label">Nombre</label>
+                <input class="ck-input" type="text" formControlName="nombre" placeholder="Juan" />
+                @if (fieldError(deliveryForm, 'nombre')) {
+                  <span class="ck-field-error">Requerido</span>
+                }
+              </div>
+              <div class="ck-field" [class.error]="fieldError(deliveryForm, 'apellido')">
+                <label class="ck-label">Apellido</label>
+                <input class="ck-input" type="text" formControlName="apellido" placeholder="García" />
+                @if (fieldError(deliveryForm, 'apellido')) {
+                  <span class="ck-field-error">Requerido</span>
+                }
+              </div>
+            </div>
+
+            <!-- Teléfono -->
+            <div class="ck-field" [class.error]="fieldError(deliveryForm, 'telefono')">
+              <label class="ck-label">Teléfono</label>
+              <input class="ck-input" type="tel" formControlName="telefono" placeholder="+54 11 1234-5678" />
+              @if (fieldError(deliveryForm, 'telefono')) {
+                <span class="ck-field-error">Requerido</span>
+              }
+            </div>
+
+            <!-- CP -->
+            <div class="ck-field" [class.error]="fieldError(deliveryForm, 'codigoPostal')">
+              <label class="ck-label">
+                Código Postal
+                <a href="https://www.correoargentino.com.ar/formularios/cpa" target="_blank" class="ck-label-link">No sé mi CP →</a>
+              </label>
+              <input class="ck-input" type="text" formControlName="codigoPostal"
+                     placeholder="1426" maxlength="4"
+                     (input)="onCpChange()" />
+              @if (fieldError(deliveryForm, 'codigoPostal')) {
+                <span class="ck-field-error">Ingresá un CP válido de 4 dígitos</span>
+              }
+            </div>
+
+            <!-- Dirección -->
+            <div class="ck-field" [class.error]="fieldError(deliveryForm, 'calle')">
+              <label class="ck-label">Calle</label>
+              <input class="ck-input" type="text" formControlName="calle" placeholder="Av. Corrientes" />
+            </div>
+
+            <div class="ck-row-3">
+              <div class="ck-field" [class.error]="fieldError(deliveryForm, 'numero')">
+                <label class="ck-label">Número</label>
+                <input class="ck-input" type="text" formControlName="numero" placeholder="1234" />
+              </div>
+              <div class="ck-field">
+                <label class="ck-label">Piso</label>
+                <input class="ck-input" type="text" formControlName="piso" placeholder="3" />
+              </div>
+              <div class="ck-field">
+                <label class="ck-label">Depto</label>
+                <input class="ck-input" type="text" formControlName="depto" placeholder="B" />
+              </div>
+            </div>
+
+            <div class="ck-row-2">
+              <div class="ck-field" [class.error]="fieldError(deliveryForm, 'localidad')">
+                <label class="ck-label">Localidad</label>
+                <input class="ck-input" type="text" formControlName="localidad" placeholder="Palermo" />
+              </div>
+              <div class="ck-field" [class.error]="fieldError(deliveryForm, 'provincia')">
+                <label class="ck-label">Provincia</label>
+                <select class="ck-input ck-select" formControlName="provincia">
+                  <option value="">Seleccioná...</option>
+                  <option>Buenos Aires</option>
+                  <option>CABA</option>
+                  <option>Catamarca</option>
+                  <option>Chaco</option>
+                  <option>Chubut</option>
+                  <option>Córdoba</option>
+                  <option>Corrientes</option>
+                  <option>Entre Ríos</option>
+                  <option>Formosa</option>
+                  <option>Jujuy</option>
+                  <option>La Pampa</option>
+                  <option>La Rioja</option>
+                  <option>Mendoza</option>
+                  <option>Misiones</option>
+                  <option>Neuquén</option>
+                  <option>Río Negro</option>
+                  <option>Salta</option>
+                  <option>San Juan</option>
+                  <option>San Luis</option>
+                  <option>Santa Cruz</option>
+                  <option>Santa Fe</option>
+                  <option>Santiago del Estero</option>
+                  <option>Tierra del Fuego</option>
+                  <option>Tucumán</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Opciones de envío -->
+            @if (calculatingShipping()) {
+              <div class="ck-shipping-loading">
+                <div class="ck-spinner-sm"></div>
+                Calculando opciones de envío...
+              </div>
+            }
+
+            @if (shippingOptions().length > 0) {
+              <div class="ck-shipping-section">
+                <p class="ck-shipping-title">Método de envío</p>
+                <div class="ck-shipping-options">
+                  @for (opt of shippingOptions(); track opt.id) {
+                    <div class="ck-shipping-option"
+                         [class.selected]="selectedShipping()?.id === opt.id"
+                         (click)="selectShipping(opt)">
+                      <div class="ck-shipping-radio">
+                        @if (selectedShipping()?.id === opt.id) {
+                          <div class="ck-shipping-radio-dot"></div>
+                        }
+                      </div>
+                      <div class="ck-shipping-logo">{{ opt.logo }}</div>
+                      <div class="ck-shipping-info">
+                        <span class="ck-shipping-name">{{ opt.name }} — {{ opt.description }}</span>
+                        <span class="ck-shipping-days">{{ opt.estimatedDays }}</span>
+                      </div>
+                      <span class="ck-shipping-cost">{{ formatPrice(opt.cost) }}</span>
+                    </div>
+                  }
+                </div>
+              </div>
+            }
+
+            @if (error()) {
+              <div class="ck-error">{{ error() }}</div>
+            }
+
+            <div class="ck-actions">
+              <button type="button" class="ck-btn-back" (click)="goBack()">← Volver</button>
+              <button type="submit" class="ck-btn-primary">
+                Continuar con el pago
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                  <line x1="5" y1="12" x2="19" y2="12"/>
+                  <polyline points="12 5 19 12 12 19"/>
+                </svg>
+              </button>
+            </div>
+
+          </form>
+        </section>
+      }
+
+      <!-- ══ PASO 3: PAGO ══════════════════════════════════ -->
+      @if (step() === 'pago') {
+        <section class="ck-section">
+          <h2 class="ck-section-title">Resumen y pago</h2>
+
+          <!-- Resumen de entrega -->
+          <div class="ck-summary-box">
+            <div class="ck-summary-row">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="14" height="14">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                <circle cx="12" cy="7" r="4"/>
+              </svg>
+              <span>{{ contactForm.value.email }}</span>
+              <button class="ck-summary-edit" (click)="step.set('contacto')">Cambiar</button>
+            </div>
+            <div class="ck-summary-divider"></div>
+            <div class="ck-summary-row">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="14" height="14">
+                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+                <circle cx="12" cy="10" r="3"/>
+              </svg>
+              <span>{{ deliveryForm.value.calle }} {{ deliveryForm.value.numero }}, {{ deliveryForm.value.localidad }}</span>
+              <button class="ck-summary-edit" (click)="step.set('entrega')">Cambiar</button>
+            </div>
+            <div class="ck-summary-divider"></div>
+            <div class="ck-summary-row">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="14" height="14">
+                <rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/>
+                <circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/>
+              </svg>
+              <span>{{ selectedShipping()?.name }} — {{ selectedShipping()?.description }}</span>
+              <span class="ck-summary-price">{{ formatPrice(shippingCost()) }}</span>
+            </div>
+          </div>
+
+          <!-- Métodos de pago -->
+          <div class="ck-payment-methods">
+            <p class="ck-payment-label">Pagás de forma segura con</p>
+            <div class="ck-mp-badge">
+              <svg viewBox="0 0 60 24" fill="none" width="60" height="24">
+                <text x="0" y="18" font-family="Arial" font-weight="bold" font-size="14" fill="#009EE3">MP</text>
+              </svg>
+              <span>Mercado Pago</span>
+            </div>
+            <p class="ck-payment-desc">Tarjetas de crédito, débito, transferencia y más.</p>
+          </div>
+
+          @if (error()) {
+            <div class="ck-error">{{ error() }}</div>
+          }
+
+          <div class="ck-actions">
+            <button type="button" class="ck-btn-back" (click)="goBack()">← Volver</button>
+            <button class="ck-btn-pay" (click)="goToPayment()" [disabled]="loading()">
+              @if (loading()) {
+                <div class="ck-spinner-sm white"></div>
+                Procesando...
+              } @else {
+                Pagar {{ formatPrice(totalConEnvio()) }}
+              }
+            </button>
+          </div>
+
+          <p class="ck-secure">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="12" height="12">
+              <rect x="3" y="11" width="18" height="11" rx="2"/>
+              <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+            </svg>
+            Pago 100% seguro · SSL encriptado
+          </p>
+        </section>
+      }
+
+    </div>
+
+    <!-- ── Columna derecha: resumen del pedido ────────────── -->
+    <aside class="ck-aside">
+      <div class="ck-aside-inner">
+
+        <h3 class="ck-aside-title">Tu pedido</h3>
+
+        <div class="ck-aside-items">
+          @for (item of items(); track item.id) {
+            <div class="ck-aside-item">
+              <div class="ck-aside-img">
+                @if (item.image) {
+                  <img [src]="item.image" [alt]="item.product" />
+                } @else {
+                  <div class="ck-aside-img-placeholder"></div>
+                }
+                <span class="ck-aside-badge">{{ item.quantity }}</span>
+              </div>
+              <div class="ck-aside-info">
+                <p class="ck-aside-name">{{ item.product }}</p>
+                <p class="ck-aside-meta">Talle {{ item.size }}{{ item.color ? ' · ' + item.color : '' }}</p>
+              </div>
+              <p class="ck-aside-price">{{ formatPrice(item.price * item.quantity) }}</p>
+            </div>
+          }
+        </div>
+
+        <div class="ck-aside-divider"></div>
+
+        <div class="ck-aside-totals">
+          <div class="ck-aside-row">
+            <span>Subtotal</span>
+            <span>{{ formatPrice(total()) }}</span>
+          </div>
+          <div class="ck-aside-row">
+            <span>Envío</span>
+            @if (selectedShipping()) {
+              <span>{{ formatPrice(shippingCost()) }}</span>
+            } @else {
+              <span class="ck-aside-pending">Calculado al ingresar CP</span>
+            }
+          </div>
+          <div class="ck-aside-row total">
+            <span>Total</span>
+            <span>{{ formatPrice(totalConEnvio()) }}</span>
+          </div>
+          @if (selectedShipping()) {
+            <p class="ck-aside-installments">{{ installments() }}</p>
+          }
+        </div>
+
+      </div>
+    </aside>
 
   </div>
 
