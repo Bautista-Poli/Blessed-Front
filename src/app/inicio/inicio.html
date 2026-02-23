@@ -140,6 +140,8 @@
     </div>
   </section>
 
+  <igCarousel></igCarousel>
+
   <!-- ══════════════════════════════════════════════
        STATEMENT EDITORIAL
   ══════════════════════════════════════════════ -->
@@ -152,10 +154,6 @@
     </div>
   </section>
 
-  <!-- inicio.html -->
-  <app-big-item-for-index
-    (onAddToCart)="onFeatureAddToCart($event)">
-  </app-big-item-for-index>
 
   <!-- ══════════════════════════════════════════════
        FULL-BLEED — CAMPAÑA (estilo Zara)
@@ -173,33 +171,29 @@
        DOBLE IMAGEN (estilo editorial MADH)
   ══════════════════════════════════════════════ -->
   <section class="dual-image">
-    <div class="dual-item reveal" data-delay="0">
-      <div class="dual-img-wrap">
-        <img src="assets/Products/Product 2/product2-4.webp" alt="Bles Sed Tee" />
-      </div>
-      <div class="dual-info">
-        <h3 class="dual-title">"BLES SED" TEE</h3>
-        <div class="dual-pricing">
-          <span>$29.900</span>
-          <span class="price-old-sm">$46.000</span>
+    @if (loadingProducts()) {
+      <div class="pd-loading" style="grid-column: span 2; height: 300px;">Cargando destacados...</div>
+    } @else {
+      @for (p of featuredProducts(); track p.id; let i = $index) {
+        <div class="dual-item reveal" [attr.data-delay]="i * 180">
+          <div class="dual-img-wrap">
+            <a [routerLink]="['/product', p.id]">
+              <img [src]="p.images[0]" [alt]="p.name" />
+            </a>
+          </div>
+          <div class="dual-info">
+            <h3 class="dual-title">{{ p.name }}</h3>
+            <div class="dual-pricing">
+              <span>{{ formatPrice(p.price) }}</span>
+              @if (p.originalPrice && p.originalPrice > p.price) {
+                <span class="price-old-sm">{{ formatPrice(p.originalPrice) }}</span>
+              }
+            </div>
+            <a [routerLink]="['/product', p.id]" class="btn-link-sm">Ver producto →</a>
+          </div>
         </div>
-        <a href="#" class="btn-link-sm">Ver producto →</a>
-      </div>
-    </div>
-
-    <div class="dual-item reveal" data-delay="180">
-      <div class="dual-img-wrap">
-        <img src="assets/Products/Product 2/product2-3.webp" alt="Essential Crewneck" />
-      </div>
-      <div class="dual-info">
-        <h3 class="dual-title">"ESSENTIAL" CREWNECK</h3>
-        <div class="dual-pricing">
-          <span>$45.000</span>
-          <span class="price-old-sm">$75.000</span>
-        </div>
-        <a href="#" class="btn-link-sm">Ver producto →</a>
-      </div>
-    </div>
+      }
+    }
   </section>
 
   
@@ -223,11 +217,7 @@
 
   <!-- ── TOAST ─────────────────────────────────────────────── -->
   <div class="toast" [class.show]="toastVisible">{{ toastMessage }}</div>
-
-  <!-- ══════════════════════════════════════════════
-       CARRUSEL INSTAGRAM / MEDIA
-  ══════════════════════════════════════════════ -->
-  <igCarousel></igCarousel>
+  
 
   <!-- ══════════════════════════════════════════════
        NEWSLETTER

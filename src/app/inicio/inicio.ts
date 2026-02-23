@@ -1,28 +1,34 @@
 // src/app/inicio/inicio.ts
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject, signal, ChangeDetectorRef } from '@angular/core'; // Añadimos signal y ChangeDetectorRef
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 
-import { AddToCartEvent, BigItemForIndex } from '../big-item-for-index/big-item-for-index';
 import { IgCarousel } from '../ig-carousel/ig-carousel';
 import { CartService } from '../../cart.service';
 import { CartDrawer } from '../cart-drawer/cart-drawer';
+import { ProductService, CatalogProduct } from '../../product.service'; // Importamos el servicio de productos
 
 @Component({
   selector: 'app-inicio',
   standalone: true,
-  imports: [CommonModule, FormsModule, BigItemForIndex, IgCarousel, RouterLink, CartDrawer],
-  // ↑ CartDrawer se saca de aquí — vive en app.html una sola vez
+  imports: [CommonModule, FormsModule, IgCarousel, RouterLink, CartDrawer],
   templateUrl: './inicio.html',
   styleUrls: [
-    './inicio.css',        // Tu archivo original/base
-    './inicio2.css' // El nuevo archivo separado
+    './inicio.css',
+    './inicio2.css'
   ],
 })
 export class Inicio implements OnInit, OnDestroy {
+  private cartService    = inject(CartService);
+  private productService = inject(ProductService);
+  private cdr            = inject(ChangeDetectorRef);
 
-  // ── ESTADO LOCAL (solo lo que pertenece a esta pantalla) ──
+  // ── ESTADO DE PRODUCTOS DEL BACKEND ──
+  featuredProducts = signal<CatalogProduct[]>([]);
+  loadingProducts  = signal(true);
+
+  // ── ESTADO LOCAL ──
   announceVisible   = true;
   mobileMenuOpen    = false;
   navScrolled       = false;
@@ -33,59 +39,79 @@ export class Inicio implements OnInit, OnDestroy {
   toastMessage = '';
   toastVisible = false;
 
-  private selectedSizes = new Map<string, string>();
+  // Mapas para manejar selección de múltiples productos en la misma pantalla
+  private selectedSizes  = new Map<string, string>();
+  private selectedColors = new Map<string, string>();
+
   private toastTimer: ReturnType<typeof setTimeout> | null = null;
   private scrollListener!: () => void;
 
-  // ── CONSTRUCTOR: inyectá CartService ──────────────────────
-  constructor(private cartService: CartService) {}
-
-  // ── GETTER del badge del navbar ───────────────────────────
   get cartCount(): number { return this.cartService.count; }
 
-  // ── LIFECYCLE ─────────────────────────────────────────────
   ngOnInit(): void {
+    this.loadFeaturedProducts(); // Cargar productos al iniciar
     this.initScrollReveal();
     this.initNavbarScroll();
     this.initSmoothScroll();
   }
 
   ngOnDestroy(): void {
-    window.removeEventListener('scroll', this.scrollListener);
+    if (this.scrollListener) {
+      window.removeEventListener('scroll', this.scrollListener);
+    }
   }
 
-  // ══════════════════════════════════════════════════════════
-  //  CARRITO — delegado al CartService
-  // ══════════════════════════════════════════════════════════
+  // ── CARGA DE PRODUCTOS ──────────────────────────────────────
+  loadFeaturedProducts(): void {
+    this.loadingProducts.set(true);
+    this.productService.getProducts({ drop: 'all' }).subscribe({
+      next: (products) => {
+        this.featuredProducts.set(products.slice(0, 2)); 
+        this.loadingProducts.set(false);
+        setTimeout(() => this.initScrollReveal(), 100);
+        
+        this.cdr.detectChanges();
+      },
+      error: () => this.loadingProducts.set(false)
+    });
+  }
 
-  openCart(): void  { this.cartService.open();  }
-  closeCart(): void { this.cartService.close(); }
+  // ── CARRITO ACTUALIZADO ─────────────────────────────────────
+  
+  // Este método ahora es genérico para cualquier producto en el inicio
+  addToCart(product: CatalogProduct): void {
+    const size = this.selectedSizes.get(product.id);
+    const color = this.selectedColors.get(product.id) || (product.colors[0]?.name || '');
 
-  addToCart(product: string, price: number, size: string): void {
     if (!size) {
       this.showToast('Seleccioná un talle');
       return;
     }
-    this.cartService.add({ product, price, size });
-    this.showToast(`${product} — Talle ${size} agregado`);
+
+    this.cartService.add({
+      product: product.name,
+      price: product.price,
+      size: size,
+      color: color,
+      image: product.images[0]
+    });
+
+    this.showToast(`${product.name} agregado al carrito`);
+    this.cartService.open(); // Opcional: abrir el carrito al agregar
   }
 
-  // Recibe el evento de <app-big-item-for-index>
-  onFeatureAddToCart(event: AddToCartEvent): void {
-    this.addToCart(event.product, event.price, event.size);
+  // ── MANEJO DE SELECCIÓN ─────────────────────────────────────
+  
+  selectSize(productId: string, size: string): void {
+    this.selectedSizes.set(productId, size);
   }
 
-  // ── TALLE ──────────────────────────────────────────────────
-  selectSize(groupKey: string, size: string): void {
-    this.selectedSizes.set(groupKey, size);
-  }
-
-  isSizeSelected(groupKey: string, size: string): boolean {
-    return this.selectedSizes.get(groupKey) === size;
+  isSizeSelected(productId: string, size: string): boolean {
+    return this.selectedSizes.get(productId) === size;
   }
 
   // ══════════════════════════════════════════════════════════
-  //  TOAST
+  //  MÉTODOS UI (TOAST, SCROLL, ETC.) - Se mantienen igual
   // ══════════════════════════════════════════════════════════
 
   showToast(message: string): void {
@@ -95,27 +121,15 @@ export class Inicio implements OnInit, OnDestroy {
     this.toastTimer = setTimeout(() => { this.toastVisible = false; }, 2800);
   }
 
-  // ══════════════════════════════════════════════════════════
-  //  ANNOUNCEMENT BAR
-  // ══════════════════════════════════════════════════════════
-
   closeAnnouncement(): void {
     this.announceVisible = false;
     document.documentElement.style.setProperty('--announce-height', '0px');
   }
 
-  // ══════════════════════════════════════════════════════════
-  //  NAVBAR SCROLL
-  // ══════════════════════════════════════════════════════════
-
   private initNavbarScroll(): void {
     this.scrollListener = () => { this.navScrolled = window.scrollY > 60; };
     window.addEventListener('scroll', this.scrollListener, { passive: true });
   }
-
-  // ══════════════════════════════════════════════════════════
-  //  MOBILE MENU
-  // ══════════════════════════════════════════════════════════
 
   toggleMobileMenu(): void {
     this.mobileMenuOpen = !this.mobileMenuOpen;
@@ -127,29 +141,8 @@ export class Inicio implements OnInit, OnDestroy {
     document.body.style.overflow = '';
   }
 
-  // ══════════════════════════════════════════════════════════
-  //  KEYBOARD ESC
-  // ══════════════════════════════════════════════════════════
-
-  onEscKey(event: KeyboardEvent): void {
-    if (event.key === 'Escape') this.cartService.close();
-  }
-
-  // ══════════════════════════════════════════════════════════
-  //  HERO PANELS
-  // ══════════════════════════════════════════════════════════
-
   onHeroPanelEnter(side: 'left' | 'right'): void { this.heroPanelHovered = side; }
   onHeroPanelLeave(): void                        { this.heroPanelHovered = null; }
-
-  getHeroPanelFlex(side: 'left' | 'right'): string {
-    if (!this.heroPanelHovered) return '1';
-    return this.heroPanelHovered === side ? '1.15' : '0.85';
-  }
-
-  // ══════════════════════════════════════════════════════════
-  //  NEWSLETTER
-  // ══════════════════════════════════════════════════════════
 
   onNewsletterSubmit(): void {
     if (!this.newsletterEmail) return;
@@ -162,10 +155,6 @@ export class Inicio implements OnInit, OnDestroy {
       setTimeout(() => { this.newsletterDone = false; }, 3000);
     }, 800);
   }
-
-  // ══════════════════════════════════════════════════════════
-  //  SCROLL REVEAL
-  // ══════════════════════════════════════════════════════════
 
   private initScrollReveal(): void {
     const elements = document.querySelectorAll<HTMLElement>('.reveal');
@@ -185,10 +174,6 @@ export class Inicio implements OnInit, OnDestroy {
     elements.forEach(el => observer.observe(el));
   }
 
-  // ══════════════════════════════════════════════════════════
-  //  SMOOTH SCROLL
-  // ══════════════════════════════════════════════════════════
-
   private initSmoothScroll(): void {
     document.querySelectorAll<HTMLAnchorElement>('a[href^="#"]').forEach(anchor => {
       anchor.addEventListener('click', (e: Event) => {
@@ -197,29 +182,37 @@ export class Inicio implements OnInit, OnDestroy {
         const target = document.querySelector<HTMLElement>(href);
         if (!target) return;
         e.preventDefault();
-        const navH = parseInt(
-          getComputedStyle(document.documentElement).getPropertyValue('--nav-height'), 10
-        );
-        const annH = this.announceVisible
-          ? parseInt(
-              getComputedStyle(document.documentElement).getPropertyValue('--announce-height'), 10
-            )
-          : 0;
         window.scrollTo({
-          top: target.getBoundingClientRect().top + window.scrollY - navH - annH,
+          top: target.getBoundingClientRect().top + window.scrollY - 80, // Ajuste fijo aproximado de nav
           behavior: 'smooth',
         });
       });
     });
   }
+  
 
-  // ══════════════════════════════════════════════════════════
-  //  UTILS
-  // ══════════════════════════════════════════════════════════
+  // Este es el método que te faltaba
+  getHeroPanelFlex(side: 'left' | 'right'): string {
+    if (!this.heroPanelHovered) return '1';
+    return this.heroPanelHovered === side ? '1.15' : '0.85';
+  }
+  onEscKey(event: KeyboardEvent): void {
+    if (event.key === 'Escape') {
+      this.cartService.close();
+      this.closeMobileMenu();
+    }
+  }
+
+  // ── CART ACTIONS ──
+  openCart(): void {
+    this.cartService.open();
+  }
+
+  closeCart(): void {
+    this.cartService.close();
+  }
 
   formatPrice(amount: number): string {
     return `$${amount.toLocaleString('es-AR')}`;
   }
 }
-
-
