@@ -240,7 +240,7 @@ button { font-family: var(--font-body); border: none; background: none; cursor: 
   grid-template-columns: 1fr 1fr;
   height: 100vh;
   min-height: 600px;
-  margin-top: calc(var(--nav-height) + var(--announce-height));
+  margin-top: 65px;
   position: relative;
   overflow: hidden;
   transition: margin-top .3s var(--ease-circ);
