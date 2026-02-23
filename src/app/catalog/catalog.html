@@ -27,10 +27,10 @@
 
     <div class="cat-img-wrap" [routerLink]="['/product', p.id]">
 
-      <img class="cat-img-main" [src]="p.image" [alt]="p.name" loading="lazy" />
+      <img class="cat-img-main" [src]="p.images[0]" [alt]="p.name" loading="lazy" />
 
-      @if (p.imageHover) {
-        <img class="cat-img-hover" [src]="p.imageHover" [alt]="p.name" loading="lazy" />
+      @if (p.images[1]) {
+        <img class="cat-img-hover" [src]="p.images[1]" [alt]="p.name" loading="lazy" />
       }
 
       <div class="cat-hover-overlay">

@@ -158,54 +158,11 @@
     <!-- ══ GRID DE PRODUCTOS ══════════════════════════════════ -->
     <div class="adm-grid">
       @for (p of filteredProducts(); track p.id) {
-        <div class="adm-card">
-
-          <!-- Imagen con botón eliminar -->
-          <div class="adm-card-img-wrap">
-            <img [src]="p.image" [alt]="p.name" class="adm-card-img" />
-
-            <!-- Badge eliminar -->
-            <button
-              class="adm-delete-badge"
-              (click)="deleteProduct(p.id, p.name)"
-              [disabled]="deleting() === p.id"
-              [title]="'Eliminar ' + p.name">
-              @if (deleting() === p.id) {
-                <svg class="adm-spin" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" width="10" height="10">
-                  <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83"/>
-                </svg>
-              } @else {
-                ✕
-              }
-            </button>
-
-            <!-- Badges info -->
-            <div class="adm-card-badges">
-              @if (p.isNew)  { <span class="adm-badge new">NEW</span> }
-              @if (p.isSale) { <span class="adm-badge sale">-{{ discount(p) }}%</span> }
-            </div>
-          </div>
-
-          <!-- Info -->
-          <div class="adm-card-body">
-            <p class="adm-card-cat">{{ p.cat }} · {{ p.drop }}</p>
-            <h3 class="adm-card-name">{{ p.name }}</h3>
-            <div class="adm-card-prices">
-              <span class="adm-price-current">{{ formatPrice(p.price) }}</span>
-              @if (p.isSale) {
-                <span class="adm-price-original">{{ formatPrice(p.originalPrice) }}</span>
-              }
-            </div>
-            @if (p.colors.length) {
-              <div class="adm-card-colors">
-                @for (c of p.colors; track c.name) {
-                  <span class="adm-color-dot" [style.background]="c.hex" [title]="c.name"></span>
-                }
-              </div>
-            }
-          </div>
-
-        </div>
+        <app-admin-product-card
+          [product]="p" 
+          [isDeleting]="deleting() === p.id"
+          (onDelete)="deleteProduct(p.id, p.name)">
+        </app-admin-product-card>
       }
 
       @if (filteredProducts().length === 0) {

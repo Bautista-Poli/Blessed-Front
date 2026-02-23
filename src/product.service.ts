@@ -16,8 +16,7 @@ export interface CatalogProduct {
   originalPrice: number;
   isNew:         boolean;
   isSale:        boolean;
-  image:         string;
-  imageHover?:   string;
+  images:        string[];
   description?:  string;
   colors:        ProductColor[];
   stock:         ProductStock[];

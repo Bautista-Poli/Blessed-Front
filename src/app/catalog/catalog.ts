@@ -157,7 +157,7 @@ export class Catalogo implements OnInit, AfterViewInit {
     e.stopPropagation();
     const size  = this.selectedSizes.get(p.id) ?? '';
     const color = this.selectedColors.get(p.id) ?? (p.colors[0]?.name ?? '');
-    this.cart.add({ product: p.name, price: p.price, size, color, image: p.image });
+    this.cart.add({ product: p.name, price: p.price, size, color, image: p.images[0] });
   }
 
   // ── Filtros / sort / vista ─────────────────────────────────

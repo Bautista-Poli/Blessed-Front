@@ -1,55 +1,52 @@
-<!-- src/app/pages/producto-detalle/producto-detalle.html -->
+<!-- src/app/item/productoDetalle.html -->
+@if (loading) {
+  <div class="pd-loading">Cargando...</div>
+} @else if (notFound) {
+  <div class="pd-not-found">Producto no encontrado.</div>
+} @else if (product) {
 
 <div class="pd-page">
 
-  <!-- ══════════════════════════════════════════════
-       BREADCRUMB
-  ══════════════════════════════════════════════ -->
+  <!-- BREADCRUMB -->
   <nav class="pd-breadcrumb">
-    <a href="#">Inicio</a>
+    <a routerLink="/">Inicio</a>
     <span>/</span>
-    <a href="#">{{ product.cat }}</a>
+    <a routerLink="/catalog">{{ product.cat }}</a>
     <span>/</span>
     <span>{{ product.name }}</span>
   </nav>
+  <div class="pd-logo-container">
+    <a [routerLink]="['/']" class="nav-logo-link">
+      <img src="assets/Logo2.webp" alt="Blessed Logo" class="logo-img" />
+    </a>
+  </div>
 
-  <!-- ══════════════════════════════════════════════
-       LAYOUT: GALERÍA | INFO
-  ══════════════════════════════════════════════ -->
+  <!-- LAYOUT -->
   <div class="pd-layout">
 
-    <!-- ── GALERÍA ─────────────────────────────────────── -->
+    <!-- ── GALERÍA ──────────────────────────────────────── -->
     <div class="pd-gallery">
 
-      <!-- Thumbnails verticales (desktop) -->
+      <!-- Thumbnails verticales -->
       <div class="pd-thumbs">
         @for (img of images; track $index) {
           <button
             class="pd-thumb"
             [class.active]="activeImgIdx === $index"
             (click)="setImage($index)"
-            [attr.aria-label]="'Foto ' + ($index + 1)"
-          >
+            [attr.aria-label]="'Foto ' + ($index + 1)">
             <img [src]="img" [alt]="product.name" loading="lazy" />
           </button>
         }
       </div>
 
-      <!-- Imagen principal con zoom -->
+      <!-- Imagen principal -->
       <div class="pd-main-img-wrap">
+        <div class="pd-main-img">
+        <img [src]="activeImage" [alt]="product.name" />
+      </div>
 
-        <div
-          class="pd-main-img"
-          [class.zoomed]="zoomActive"
-          [style.--zx]="zoomX + '%'"
-          [style.--zy]="zoomY + '%'"
-          (click)="toggleZoom($event)" 
-          (mousemove)="onImageMouseMove($event)"
-        >
-          <img [src]="activeImage" [alt]="product.name" />
-        </div>
-
-        <!-- Flechas navegación móvil -->
+        <!-- Flechas móvil -->
         <button class="pd-arrow pd-arrow--prev" (click)="prevImage()" aria-label="Foto anterior">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
             <polyline points="15 18 9 12 15 6"/>
@@ -61,12 +58,7 @@
           </svg>
         </button>
 
-        <!-- Badges -->
-        <div class="pd-badges">
-          @if (product.badge) {
-            <span class="pd-badge pd-badge--sale">{{ product.badge }}</span>
-          }
-        </div>
+        
 
         <!-- Dots móvil -->
         <div class="pd-dots">
@@ -74,24 +66,19 @@
             <button
               class="pd-dot"
               [class.active]="activeImgIdx === $index"
-              (click)="setImage($index)"
-            ></button>
+              (click)="setImage($index)">
+            </button>
           }
         </div>
 
-        <!-- Hint zoom desktop -->
-        <span class="pd-zoom-hint">Pasá el cursor para hacer zoom</span>
       </div>
 
     </div>
 
-    <!-- ── INFO + ACCIONES ──────────────────────────────── -->
+    <!-- ── INFO ─────────────────────────────────────────── -->
     <div class="pd-info">
 
-      <!-- Categoría -->
       <span class="pd-cat">{{ product.cat }}</span>
-
-      <!-- Nombre -->
       <h1 class="pd-name">{{ product.name }}</h1>
 
       <!-- Precio -->
@@ -103,31 +90,30 @@
         }
       </div>
 
-      <!-- Cuotas -->
-      <p class="pd-installments">
-        3 cuotas sin interés de {{ installmentPrice }}
-      </p>
+      <p class="pd-installments">3 cuotas sin interés de {{ installmentPrice }}</p>
 
-      <!-- ─ COLORES ─────────────────────────────────────── -->
-      <div class="pd-section">
-        <div class="pd-section-label">
-          <span>Color</span>
-          <span class="pd-selected-val">{{ selectedColor.name }}</span>
+      <!-- Colores -->
+      @if (product.colors.length > 0) {
+        <div class="pd-section">
+          <div class="pd-section-label">
+            <span>Color</span>
+            <span class="pd-selected-val">{{ selectedColor.name }}</span>
+          </div>
+          <div class="pd-swatches">
+            @for (c of product.colors; track $index) {
+              <button
+                class="pd-swatch"
+                [class.active]="selectedColorIdx === $index"
+                [style.background]="c.hex"
+                [attr.aria-label]="c.name"
+                (click)="selectColor($index)">
+              </button>
+            }
+          </div>
         </div>
-        <div class="pd-swatches">
-          @for (c of product.colors; track $index) {
-            <button
-              class="pd-swatch"
-              [class.active]="selectedColorIdx === $index"
-              [style.background]="c.hex"
-              [attr.aria-label]="c.name"
-              (click)="selectColor($index)"
-            ></button>
-          }
-        </div>
-      </div>
+      }
 
-      <!-- ─ TALLES ──────────────────────────────────────── -->
+      <!-- Talles -->
       <div class="pd-section">
         <div class="pd-section-label">
           <span>Talle</span>
@@ -138,12 +124,11 @@
           }
         </div>
         <div class="pd-sizes">
-          @for (s of product.sizes; track s) {
+          @for (s of availableSizes; track s) {
             <button
               class="pd-size"
               [class.active]="selectedSize === s"
-              (click)="selectSize(s)"
-            >
+              (click)="selectSize(s)">
               {{ s }}
             </button>
           }
@@ -151,13 +136,12 @@
         <a href="#" class="pd-size-guide">Guía de talles →</a>
       </div>
 
-      <!-- ─ BOTÓN AGREGAR ───────────────────────────────── -->
+      <!-- Botón agregar -->
       <button
         class="pd-add-btn"
         [class.added]="addedToBag"
         [class.no-size]="!selectedSize"
-        (click)="onAddToCart()"
-      >
+        (click)="onAddToCart()">
         @if (addedToBag) {
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <polyline points="20 6 9 17 4 12"/>
@@ -172,12 +156,14 @@
         <p class="pd-no-size-msg">Seleccioná un talle para continuar</p>
       }
 
-      <!-- ─ DESCRIPCIÓN ─────────────────────────────────── -->
-      <div class="pd-section pd-desc-section">
-        <p class="pd-desc">{{ product.description }}</p>
-      </div>
+      <!-- Descripción -->
+      @if (product.description) {
+        <div class="pd-section pd-desc-section">
+          <p class="pd-desc">{{ product.description }}</p>
+        </div>
+      }
 
-      <!-- ─ DETALLES ACORDEÓN ───────────────────────────── -->
+      <!-- Acordeón composición -->
       <div class="pd-accordion">
         <button class="pd-accordion-btn" (click)="toggleDetails()">
           <span>Composición y cuidado</span>
@@ -185,21 +171,21 @@
             class="pd-accordion-icon"
             [class.open]="detailsOpen"
             width="16" height="16" viewBox="0 0 24 24"
-            fill="none" stroke="currentColor" stroke-width="1.5"
-          >
+            fill="none" stroke="currentColor" stroke-width="1.5">
             <polyline points="6 9 12 15 18 9"/>
           </svg>
         </button>
         <div class="pd-accordion-body" [class.open]="detailsOpen">
           <ul class="pd-details-list">
-            @for (d of product.details; track d) {
-              <li>{{ d }}</li>
-            }
+            <li>100% algodón premium</li>
+            <li>Lavable a máquina en frío</li>
+            <li>No usar secadora</li>
+            <li>Planchado a baja temperatura</li>
           </ul>
         </div>
       </div>
 
-      <!-- ─ ENVÍO ───────────────────────────────────────── -->
+      <!-- Envío -->
       <div class="pd-shipping">
         <div class="pd-shipping-item">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
@@ -223,3 +209,5 @@
   </div>
 
 </div>
+
+}

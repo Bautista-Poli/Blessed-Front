@@ -343,126 +343,12 @@
   gap: 16px;
 }
 
-.adm-card {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  transition: border-color .2s;
-  animation: fadeIn .4s var(--ease);
-}
-.adm-card:hover { border-color: var(--border2); }
-
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(12px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-
-/* Imagen + botón eliminar */
-.adm-card-img-wrap {
-  position: relative;
-  aspect-ratio: 3/4;
-  overflow: hidden;
-  background: var(--surface2);
-}
-
-.adm-card-img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
-  transition: transform .4s var(--ease);
-}
-.adm-card:hover .adm-card-img { transform: scale(1.03); }
-
-/* ── Badge eliminar ───────────────────────────────────────── */
-.adm-delete-badge {
-  position: absolute;
-  top: 8px;
-  right: 8px;
-  width: 24px;
-  height: 24px;
-  border-radius: 50%;
-  background: var(--danger);
-  color: #fff;
-  border: 2px solid var(--surface);
-  font-size: 10px;
-  font-weight: bold;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  opacity: 0;
-  transform: scale(0.8);
-  transition: opacity .2s, transform .2s;
-  z-index: 2;
-  line-height: 1;
-}
-.adm-card:hover .adm-delete-badge {
-  opacity: 1;
-  transform: scale(1);
-}
-.adm-delete-badge:hover { background: #c03030; }
-.adm-delete-badge:disabled { opacity: .5; cursor: not-allowed; }
 
 .adm-spin {
   animation: spin .7s linear infinite;
 }
 @keyframes spin { to { transform: rotate(360deg); } }
 
-/* Badges info */
-.adm-card-badges {
-  position: absolute;
-  bottom: 8px;
-  left: 8px;
-  display: flex;
-  gap: 4px;
-}
-
-.adm-badge {
-  font-size: 8px;
-  letter-spacing: .16em;
-  text-transform: uppercase;
-  padding: 2px 6px;
-  font-family: var(--font-b);
-}
-.adm-badge.new  { background: var(--text); color: var(--bg); }
-.adm-badge.sale { background: var(--accent); color: var(--bg); }
-
-/* Card body */
-.adm-card-body { padding: 14px; }
-
-.adm-card-cat {
-  font-size: 9px;
-  letter-spacing: .18em;
-  text-transform: uppercase;
-  color: var(--text-muted);
-  margin-bottom: 4px;
-}
-
-.adm-card-name {
-  font-family: var(--font-d);
-  font-size: 13px;
-  font-weight: 400;
-  letter-spacing: .04em;
-  margin-bottom: 8px;
-  line-height: 1.3;
-}
-
-.adm-card-prices {
-  display: flex;
-  align-items: baseline;
-  gap: 8px;
-}
-
-.adm-price-current {
-  font-size: 13px;
-  color: var(--text);
-}
-
-.adm-price-original {
-  font-size: 11px;
-  color: var(--text-muted);
-  text-decoration: line-through;
-}
 
 .adm-card-colors {
   display: flex;
@@ -470,13 +356,7 @@
   margin-top: 8px;
 }
 
-.adm-color-dot {
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  border: 1px solid var(--border2);
-  display: inline-block;
-}
+
 
 /* Empty state */
 .adm-empty {

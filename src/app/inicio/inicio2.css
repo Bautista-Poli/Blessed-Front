@@ -49,8 +49,10 @@ button { font-family: var(--font-body); border: none; background: none; cursor: 
 
 /* ── ANNOUNCEMENT BAR ─────────────────────────────────────── */
 .announcement-bar {
-  height: var(--announce-height);
-  background: var(--black);
+  height: 50px;
+  background-color: white;
+  z-index: 100;
+  top: 59px;
   color: var(--white);
   display: flex;
   align-items: center;
@@ -89,14 +91,13 @@ button { font-family: var(--font-body); border: none; background: none; cursor: 
 /* ── NAVBAR ───────────────────────────────────────────────── */
 .nav {
   position: fixed;
-  top: var(--announce-height);
   left: 0; right: 0;
   z-index: 200;
-  height: var(--nav-height);
+  height: 60px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 40px;
+  padding: 20px 40px;
   background: rgba(255,255,255,.96);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);

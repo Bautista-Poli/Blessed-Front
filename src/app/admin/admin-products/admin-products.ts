@@ -6,11 +6,12 @@ import { Router } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ProductService } from '../../../product.service';
 import { AuthService } from '../auth.service';
+import { AdminProductCardComponent } from './admin-products-card/admin-products-card';
 
 @Component({
   selector: 'app-admin-products',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, AdminProductCardComponent],
   templateUrl: './admin-products.html',
   styleUrl: './admin-products.css',
 })
@@ -49,8 +50,10 @@ export class AdminProductsComponent implements OnInit {
     originalPrice: [0, [Validators.required, Validators.min(1)]],
     isNew:         [true],
     isSale:        [false],
-    image:         ['', Validators.required],
-    imageHover:    [''],
+    image1:        ['', Validators.required],  // imagen principal
+    image2:        [''],                        // hover
+    image3:        [''],
+    image4:        [''],
     description:   [''],
   });
 
@@ -86,17 +89,21 @@ export class AdminProductsComponent implements OnInit {
 
     try {
       const val = this.form.value;
+
+      // Construir array de imágenes filtrando vacíos
+      const images = [val.image1, val.image2, val.image3, val.image4]
+        .filter(url => !!url) as string[];
+
       await this.productService.createProduct({
         id:            val.id!,
         name:          val.name!,
         cat:           val.cat!,
-        drop:          val.drop! as any,
+        drop:          val.drop!,
         price:         Number(val.price),
         originalPrice: Number(val.originalPrice),
         isNew:         !!val.isNew,
         isSale:        !!val.isSale,
-        image:         val.image!,
-        imageHover:    val.imageHover || undefined,
+        images,
         description:   val.description || undefined,
         colors:        [],
         stock:         [],

@@ -123,9 +123,9 @@
         <article class="drop-card drop-reveal">
 
           <div class="drop-card-img-wrap" [routerLink]="['/product', p.id]">
-            <img class="drop-card-img-main"  [src]="p.image"      [alt]="p.name" loading="lazy" />
-            @if (p.imageHover) {
-              <img class="drop-card-img-hover" [src]="p.imageHover" [alt]="p.name" loading="lazy" />
+            <img class="drop-card-img-main"  [src]="p.images[0]"      [alt]="p.name" loading="lazy" />
+            @if (p.images[1]) {
+              <img class="drop-card-img-hover" [src]="p.images[1]" [alt]="p.name" loading="lazy" />
             }
 
             <div class="drop-card-badges">

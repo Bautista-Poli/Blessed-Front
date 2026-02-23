@@ -19,6 +19,24 @@
 }
 .size:hover, .size.active { border-color: var(--black); background: var(--black); color: var(--white); }
 
+
+.nav-logo-link {
+  display: inline-block; /* Cambiado de block para que el hover solo afecte al logo */
+  line-height: 0;
+  text-decoration: none;
+}
+
+.nav-logo-link img {
+  height: 35px; /* Un poco más grande para que destaque si está centrado */
+  width: auto;
+  display: block;
+  transition: transform 0.3s var(--ease);
+}
+
+.nav-logo-link:hover img {
+  transform: scale(1.05);
+}
+
 /* ── FULL BLEED ───────────────────────────────────────────── */
 .fullbleed { position: relative; overflow: hidden; }
 .fullbleed img { width: 100%; min-height: 90vh; object-fit: cover; transition: transform 1s var(--ease-out); }

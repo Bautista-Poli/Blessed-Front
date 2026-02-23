@@ -1,0 +1,44 @@
+<div class="adm-card">
+  <div class="adm-card-img-wrap">
+    
+    <div class="adm-img-slider" #slider>
+      @for (img of allImages; track $index) {
+        <img [src]="img" [alt]="product.name" class="adm-card-img" />
+      }
+    </div>
+
+    @if (allImages.length > 1) {
+      <button class="nav-btn prev" (click)="scroll(-1)" aria-label="Anterior">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="16" height="16">
+          <polyline points="15 18 9 12 15 6"></polyline>
+        </svg>
+      </button>
+      <button class="nav-btn next" (click)="scroll(1)" aria-label="Siguiente">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="16" height="16">
+          <polyline points="9 18 15 12 9 6"></polyline>
+        </svg>
+      </button>
+    }
+
+    <button class="adm-delete-badge" (click)="onDelete.emit()" [disabled]="isDeleting">
+      @if (isDeleting) { <span class="adm-spin">...</span> } @else { ✕ }
+    </button>
+
+    <div class="adm-card-badges">
+      @if (product.isNew) { <span class="adm-badge new">NEW</span> }
+      @if (product.isSale) { <span class="adm-badge sale">-{{ discount }}%</span> }
+    </div>
+  </div>
+
+  <div class="adm-card-body">
+    <p class="adm-card-cat">{{ product.cat }} · {{ product.drop }}</p>
+    <h3 class="adm-card-name">{{ product.name }}</h3>
+    <div class="adm-card-prices">
+      <span class="adm-price-current">{{ formatPrice(product.price) }}</span>
+      @if (product.isSale) {
+        <span class="adm-price-original">{{ formatPrice(product.originalPrice) }}</span>
+      }
+    </div>
+  </div>
+</div>
+

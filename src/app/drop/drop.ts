@@ -162,7 +162,7 @@ export class Drop implements OnInit, AfterViewInit, OnDestroy {
   onAddClick(p: CatalogProduct, e: Event): void {
     e.stopPropagation();
     const size = this.selectedSizes.get(p.id) ?? '';
-    this.cart.add({ product: p.name, price: p.price, size, image: p.image });
+    this.cart.add({ product: p.name, price: p.price, size, image: p.images[0] });
   }
 
   // ── Helpers ────────────────────────────────────────────────

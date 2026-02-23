@@ -6,18 +6,7 @@
   <!-- ══════════════════════════════════════════════
        ANNOUNCEMENT BAR
   ══════════════════════════════════════════════ -->
-  @if (announceVisible) {
-    <div class="announcement-bar" id="announcementBar">
-      <div class="announcement-inner">
-        <span>Envío gratis en compras superiores a $50.000</span>
-        <span class="sep">·</span>
-        <span>3 cuotas sin interés</span>
-        <span class="sep">·</span>
-        <span>Drop 02 disponible ahora</span>
-      </div>
-      <button class="announcement-close" (click)="closeAnnouncement()" aria-label="Cerrar">×</button>
-    </div>
-  }
+  
 
   <!-- ══════════════════════════════════════════════
        NAVBAR
@@ -46,7 +35,12 @@
       </ul>
     </div>
 
-    <a href="#" class="nav-logo">"BLESSED"</a>
+    <div class="pd-logo-container">
+      <a href="#" class="nav-logo-link">
+        <img src="assets/Logo2.webp" alt="Blessed Logo" class="logo-img" />
+      </a>
+    </div>
+
 
     <div class="nav-right">
       <button class="nav-icon-btn" aria-label="Buscar">
@@ -70,6 +64,18 @@
       </button>
     </div>
   </nav>
+  @if (announceVisible) {
+    <div class="announcement-bar" id="announcementBar">
+      <div class="announcement-inner">
+        <span>Envío gratis en compras superiores a $50.000</span>
+        <span class="sep">·</span>
+        <span>3 cuotas sin interés</span>
+        <span class="sep">·</span>
+        <span>Drop 02 disponible ahora</span>
+      </div>
+      <button class="announcement-close" (click)="closeAnnouncement()" aria-label="Cerrar">×</button>
+    </div>
+  }
 
   <!-- ── MOBILE MENU ─────────────────────────────────────── -->
   <div class="mobile-menu" [class.open]="mobileMenuOpen">
