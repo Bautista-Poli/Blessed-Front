@@ -10,13 +10,10 @@ export const routes: Routes = [
     path: 'catalog', 
     loadComponent: () => import('./catalog/catalog').then(m => m.Catalogo) 
   },
-  { 
-    path: 'drop1', 
-    loadComponent: () => import('./drop/drop1').then(m => m.Drop01) 
-  },
-  { 
-    path: 'drop2', 
-    loadComponent: () => import('./drop/drop2').then(m => m.Drop02) 
+  
+  {
+    path: 'drops/:id',
+    loadComponent: () => import('./drop/dropPage').then(m => m.DropPage)
   },
   { 
     path: 'product/:id', 
