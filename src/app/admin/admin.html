@@ -1,0 +1,27 @@
+<div class="login-page">
+    <div class="login-card">
+    <div class="login-brand">
+        <span class="login-logo">"BLESSED"</span>
+        <p class="login-sub">Panel de administración</p>
+    </div>
+
+    <form [formGroup]="form" (ngSubmit)="submit()">
+        <div class="login-field">
+        <label>Usuario</label>
+        <input type="text" formControlName="user" placeholder="admin" autocomplete="username" />
+        </div>
+        <div class="login-field">
+        <label>Contraseña</label>
+        <input type="password" formControlName="pass" placeholder="••••••••" autocomplete="current-password" />
+        </div>
+
+        @if (error()) {
+        <p class="login-error">Credenciales incorrectas</p>
+        }
+
+        <button type="submit" class="login-btn" [disabled]="form.invalid">
+        Ingresar
+        </button>
+    </form>
+    </div>
+</div>

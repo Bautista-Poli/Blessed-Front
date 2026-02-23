@@ -14,8 +14,8 @@ import { CatalogHeader }  from '../catalog-header/catalog-header';
 import { Subscription, map } from 'rxjs';
 
 export interface DropConfig {
-  id:          'drop01' | 'drop02';
-  number:      '01' | '02';
+  id:     string;
+  number: string;
   label:       string;
   tagline:     string;
   description: string;
@@ -58,19 +58,16 @@ export class Drop implements OnInit, AfterViewInit, OnDestroy {
 
   filters = [
     { label: 'Ver todo', value: 'all'     },
-    { label: 'T-Shirts', value: 'tshirts' },
-    { label: 'Hoodies',  value: 'hoodies' },
-    { label: 'Sale',     value: 'sale'    },
     { label: 'Drop 01',  value: 'drop01'  },
+    { label: 'Drop 02',  value: 'drop02'  },
   ];
 
   // ── Mapeo de navegación al catálogo ────────────────────────
   // Al hacer clic en estos filtros desde el DROP, volvemos al catálogo
   private readonly navigationRoutes: Record<string, string> = {
-    all:     '/catalog',
-    tshirts: '/catalog',
-    hoodies: '/catalog',
-    sale:    '/catalog',
+    all:    '/catalog',
+    drop01: '/drops/drop01',
+    drop02: '/drops/drop02',
   };
 
   constructor(
@@ -125,8 +122,7 @@ export class Drop implements OnInit, AfterViewInit, OnDestroy {
   setFilter(value: string): void {
     const route = this.navigationRoutes[value];
     if (route) {
-      // Navegamos al catálogo pasando el filtro por queryParams (?f=...)
-      this.router.navigate([route], { queryParams: { f: value } });
+      this.router.navigateByUrl(route); // ← navigateByUrl en vez de navigate con queryParams
       return;
     }
     this.activeFilter = value;

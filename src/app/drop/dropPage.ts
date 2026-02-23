@@ -37,25 +37,32 @@ export class DropPage implements OnInit {
   loading  = signal(true);
   error    = signal(false);
 
-  ngOnInit(): void {
-    // Lee el :id de la URL → /drops/drop01, /drops/drop02, /drops/drop03...
-    const dropId = this.route.snapshot.paramMap.get('id') ?? '';
+  // drop-page.ts — reemplazá ngOnInit completo
 
-    this.productService.getDrop(dropId).subscribe({
-      next: (config) => {
-        this.config.set(config);
-        // Ahora carga los productos de ese drop
-        this.productService.getProducts({ drop: dropId }).subscribe({
-          next: (products) => {
-            this.products.set(products);
-            this.loading.set(false);
-          }
-        });
-      },
-      error: () => {
-        this.error.set(true);
-        this.loading.set(false);
-      }
+  ngOnInit(): void {
+  // paramMap es un Observable que emite cada vez que cambia el :id
+    this.route.paramMap.subscribe(params => {
+      const dropId = params.get('id') ?? '';
+
+      this.loading.set(true);
+      this.error.set(false);
+      this.products.set([]);
+
+      this.productService.getDrop(dropId).subscribe({
+        next: (config) => {
+          this.config.set(config);
+          this.productService.getProducts({ drop: dropId }).subscribe({
+            next: (products) => {
+              this.products.set(products);
+              this.loading.set(false);
+            }
+          });
+        },
+        error: () => {
+          this.error.set(true);
+          this.loading.set(false);
+        }
+      });
     });
   }
 }

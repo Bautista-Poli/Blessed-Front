@@ -1,0 +1,219 @@
+<!-- admin-products.html -->
+<div class="adm-layout">
+
+  <!-- ── SIDEBAR ───────────────────────────────────────────── -->
+  <aside class="adm-sidebar">
+    <div class="adm-brand">"BLESSED"</div>
+    <nav class="adm-nav">
+      <a class="adm-nav-item active">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="16" height="16">
+          <rect x="2" y="3" width="20" height="14" rx="1"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/>
+        </svg>
+        Productos
+      </a>
+    </nav>
+    <button class="adm-logout" (click)="logout()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="14" height="14">
+        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/>
+      </svg>
+      Cerrar sesión
+    </button>
+  </aside>
+
+  <!-- ── MAIN ──────────────────────────────────────────────── -->
+  <main class="adm-main">
+
+    <!-- Topbar -->
+    <div class="adm-topbar">
+      <div>
+        <h1 class="adm-title">Productos</h1>
+        <p class="adm-subtitle">{{ filteredProducts().length }} productos en total</p>
+      </div>
+      <div class="adm-topbar-actions">
+        <div class="adm-search">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="14" height="14">
+            <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+          </svg>
+          <input type="text" placeholder="Buscar producto..." [value]="searchQuery()" (input)="searchQuery.set($any($event.target).value)" />
+        </div>
+        <button class="adm-btn-add" (click)="toggleForm()">
+          @if (showForm()) { ✕ Cancelar } @else { + Nuevo producto }
+        </button>
+      </div>
+    </div>
+
+    <!-- Alertas -->
+    @if (successMsg()) {
+      <div class="adm-alert success">✓ {{ successMsg() }}</div>
+    }
+    @if (errorMsg()) {
+      <div class="adm-alert error">✕ {{ errorMsg() }}</div>
+    }
+
+    <!-- ══ FORMULARIO ════════════════════════════════════════ -->
+    @if (showForm()) {
+      <div class="adm-form-card">
+        <h2 class="adm-form-title">Nuevo producto</h2>
+
+        <form [formGroup]="form" (ngSubmit)="submit()" novalidate>
+          <div class="adm-form-grid">
+
+            <!-- ID -->
+            <div class="adm-field" [class.err]="fieldErr('id')">
+              <label>ID único</label>
+              <input type="text" formControlName="id" placeholder="p09" />
+              @if (fieldErr('id')) { <span class="adm-err">Requerido</span> }
+            </div>
+
+            <!-- Nombre -->
+            <div class="adm-field" [class.err]="fieldErr('name')">
+              <label>Nombre</label>
+              <input type="text" formControlName="name" placeholder='"SQUAD" TEE' />
+              @if (fieldErr('name')) { <span class="adm-err">Requerido</span> }
+            </div>
+
+            <!-- Categoría -->
+            <div class="adm-field">
+              <label>Categoría</label>
+              <select formControlName="cat">
+                @for (c of CATS; track c) { <option [value]="c">{{ c }}</option> }
+              </select>
+            </div>
+
+            <!-- Drop -->
+            <div class="adm-field">
+              <label>Drop</label>
+              <select formControlName="drop">
+                @for (d of DROPS; track d) { <option [value]="d">{{ d }}</option> }
+              </select>
+            </div>
+
+            <!-- Precio -->
+            <div class="adm-field" [class.err]="fieldErr('price')">
+              <label>Precio ARS</label>
+              <input type="number" formControlName="price" placeholder="29900" />
+              @if (fieldErr('price')) { <span class="adm-err">Ingresá un precio válido</span> }
+            </div>
+
+            <!-- Precio original -->
+            <div class="adm-field" [class.err]="fieldErr('originalPrice')">
+              <label>Precio original ARS</label>
+              <input type="number" formControlName="originalPrice" placeholder="46000" />
+              @if (fieldErr('originalPrice')) { <span class="adm-err">Requerido</span> }
+            </div>
+
+            <!-- Imagen principal -->
+            <div class="adm-field adm-field-wide" [class.err]="fieldErr('image')">
+              <label>URL imagen principal</label>
+              <input type="text" formControlName="image" placeholder="assets/Products/..." (input)="onImageInput($event)" />
+              @if (fieldErr('image')) { <span class="adm-err">Requerido</span> }
+            </div>
+
+            <!-- Imagen hover -->
+            <div class="adm-field adm-field-wide">
+              <label>URL imagen hover <span class="adm-opt">(opcional)</span></label>
+              <input type="text" formControlName="imageHover" placeholder="assets/Products/..." />
+            </div>
+
+            <!-- Descripción -->
+            <div class="adm-field adm-field-wide">
+              <label>Descripción <span class="adm-opt">(opcional)</span></label>
+              <textarea formControlName="description" rows="2" placeholder="Descripción corta del producto..."></textarea>
+            </div>
+
+            <!-- Flags -->
+            <div class="adm-field adm-flags">
+              <label class="adm-toggle">
+                <input type="checkbox" formControlName="isNew" />
+                <span class="adm-toggle-track"></span>
+                <span>Es nuevo</span>
+              </label>
+              <label class="adm-toggle">
+                <input type="checkbox" formControlName="isSale" />
+                <span class="adm-toggle-track"></span>
+                <span>En oferta</span>
+              </label>
+            </div>
+
+            <!-- Preview imagen -->
+            @if (previewUrl()) {
+              <div class="adm-preview">
+                <img [src]="previewUrl()!" alt="preview" />
+                <span class="adm-preview-label">Preview</span>
+              </div>
+            }
+
+          </div>
+
+          <div class="adm-form-footer">
+            <button type="button" class="adm-btn-cancel" (click)="toggleForm()">Cancelar</button>
+            <button type="submit" class="adm-btn-save" [disabled]="saving()">
+              @if (saving()) { Guardando... } @else { Guardar producto }
+            </button>
+          </div>
+        </form>
+      </div>
+    }
+
+    <!-- ══ GRID DE PRODUCTOS ══════════════════════════════════ -->
+    <div class="adm-grid">
+      @for (p of filteredProducts(); track p.id) {
+        <div class="adm-card">
+
+          <!-- Imagen con botón eliminar -->
+          <div class="adm-card-img-wrap">
+            <img [src]="p.image" [alt]="p.name" class="adm-card-img" />
+
+            <!-- Badge eliminar -->
+            <button
+              class="adm-delete-badge"
+              (click)="deleteProduct(p.id, p.name)"
+              [disabled]="deleting() === p.id"
+              [title]="'Eliminar ' + p.name">
+              @if (deleting() === p.id) {
+                <svg class="adm-spin" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" width="10" height="10">
+                  <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83"/>
+                </svg>
+              } @else {
+                ✕
+              }
+            </button>
+
+            <!-- Badges info -->
+            <div class="adm-card-badges">
+              @if (p.isNew)  { <span class="adm-badge new">NEW</span> }
+              @if (p.isSale) { <span class="adm-badge sale">-{{ discount(p) }}%</span> }
+            </div>
+          </div>
+
+          <!-- Info -->
+          <div class="adm-card-body">
+            <p class="adm-card-cat">{{ p.cat }} · {{ p.drop }}</p>
+            <h3 class="adm-card-name">{{ p.name }}</h3>
+            <div class="adm-card-prices">
+              <span class="adm-price-current">{{ formatPrice(p.price) }}</span>
+              @if (p.isSale) {
+                <span class="adm-price-original">{{ formatPrice(p.originalPrice) }}</span>
+              }
+            </div>
+            @if (p.colors.length) {
+              <div class="adm-card-colors">
+                @for (c of p.colors; track c.name) {
+                  <span class="adm-color-dot" [style.background]="c.hex" [title]="c.name"></span>
+                }
+              </div>
+            }
+          </div>
+
+        </div>
+      }
+
+      @if (filteredProducts().length === 0) {
+        <div class="adm-empty">
+          <p>No hay productos{{ searchQuery() ? ' que coincidan con "' + searchQuery() + '"' : '' }}.</p>
+        </div>
+      }
+    </div>
+
+  </main>
+</div>

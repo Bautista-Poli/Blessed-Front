@@ -1,0 +1,74 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500&family=Tenor+Sans&display=swap');
+
+    .login-page {
+      min-height: 100vh;
+      background: #0d0d0d;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Tenor Sans', sans-serif;
+    }
+    .login-card {
+      background: #141414;
+      border: 1px solid #2a2a2a;
+      padding: 48px;
+      width: 360px;
+    }
+    .login-brand { text-align: center; margin-bottom: 36px; }
+    .login-logo {
+      font-family: 'Playfair Display', serif;
+      font-size: 22px;
+      color: #fff;
+      letter-spacing: .1em;
+    }
+    .login-sub {
+      font-size: 10px;
+      letter-spacing: .2em;
+      text-transform: uppercase;
+      color: #555;
+      margin-top: 6px;
+    }
+    .login-field { margin-bottom: 16px; }
+    .login-field label {
+      display: block;
+      font-size: 9px;
+      letter-spacing: .2em;
+      text-transform: uppercase;
+      color: #666;
+      margin-bottom: 6px;
+    }
+    .login-field input {
+      width: 100%;
+      background: #1e1e1e;
+      border: 1px solid #2a2a2a;
+      color: #fff;
+      padding: 11px 14px;
+      font-family: 'Tenor Sans', sans-serif;
+      font-size: 13px;
+      outline: none;
+      transition: border-color .2s;
+      box-sizing: border-box;
+    }
+    .login-field input:focus { border-color: #555; }
+    .login-error {
+      font-size: 11px;
+      color: #e05555;
+      letter-spacing: .06em;
+      margin-bottom: 12px;
+    }
+    .login-btn {
+      width: 100%;
+      background: #fff;
+      color: #0d0d0d;
+      border: none;
+      padding: 13px;
+      font-family: 'Tenor Sans', sans-serif;
+      font-size: 10px;
+      letter-spacing: .2em;
+      text-transform: uppercase;
+      cursor: pointer;
+      margin-top: 8px;
+      transition: background .2s;
+    }
+    .login-btn:hover:not(:disabled) { background: #e8e6e2; }
+    .login-btn:disabled { opacity: .4; cursor: not-allowed; }

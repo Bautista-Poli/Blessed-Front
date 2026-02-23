@@ -33,8 +33,8 @@ export class Catalogo implements OnInit, AfterViewInit {
   private productService = inject(ProductService);
 
   private readonly dropRoutes: Record<string, string> = {
-    drop01: '/drop1',
-    drop02: '/drop2',
+    drop01: '/drops/drop01',
+    drop02: '/drops/drop02',
   };
 
   // ── Estado ─────────────────────────────────────────────────
@@ -59,6 +59,7 @@ export class Catalogo implements OnInit, AfterViewInit {
     { label: 'Hoodies',  value: 'hoodies' },
     { label: 'Sale',     value: 'sale'    },
     { label: 'Drop 01',  value: 'drop01'  },
+    { label: 'Drop 02',  value: 'drop02'  },
   ];
   activeFilter = 'all';
 

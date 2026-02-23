@@ -1,5 +1,6 @@
 // src/app/app.routes.ts
 import { Routes } from '@angular/router';
+import { authGuard } from './admin/auth.guard';
 
 export const routes: Routes = [
   { 
@@ -34,5 +35,14 @@ export const routes: Routes = [
     loadComponent: () =>
       import('./checkout-result/checkout-result').then(m => m.CheckoutResultComponent)
   },
-  { path: '**', redirectTo: '' }
+  {
+    path: 'admin/login',
+    loadComponent: () => import('./admin/admin-login').then(m => m.AdminLogin)
+  },
+  {
+    path: 'admin/products',
+    loadComponent: () => import('./admin/admin-products/admin-products').then(m => m.AdminProductsComponent),
+    canActivate: [authGuard]
+  },
+  //{ path: '**', redirectTo: '' }
 ];

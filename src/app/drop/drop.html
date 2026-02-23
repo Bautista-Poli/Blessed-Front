@@ -34,7 +34,7 @@
 
       <h1 class="drop-hero-title">
         <span class="drop-hero-word">BLESSED</span>
-        <em class="drop-hero-word">DROP</em>
+        <em class="drop-hero-word">DROP {{ config.number }}</em>
       </h1>
 
       <p class="drop-hero-tagline">{{ config.tagline }}</p>
@@ -113,7 +113,6 @@
         Las piezas
         <span class="drop-products-count">{{ itemCount }}</span>
       </h2>
-      <!-- ✅ Ruta correcta: /catalog (no /catalog/config.id que no existe) -->
       <a routerLink="/catalog" class="drop-products-link">
         Ver catálogo completo →
       </a>
