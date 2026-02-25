@@ -6,6 +6,7 @@ import { ProductService } from '../../../../services/product.service';
 import { DropService } from '../../../../services/drop.service';
 import { ImageUploadSlotComponent } from './image-upload/image-upload-slot';
 import { CloudinaryService } from '../../../../services/imageCloudinary';
+import { filter, take } from 'rxjs';
 
 @Component({
   selector: 'app-admin-product-form',
@@ -37,6 +38,7 @@ export class AdminProductFormComponent implements OnInit {
   files    = signal<(File | null)[]>([null, null, null, null]);
   previews = signal<(string | null)[]>([null, null, null, null]);
   imageUrls = signal<(string | null)[]>([null, null, null, null]);
+  publicIds = signal<(string | null)[]>([null, null, null, null]);
 
   uploading = signal(false);
   progress  = signal(0);
@@ -45,7 +47,6 @@ export class AdminProductFormComponent implements OnInit {
   readonly CATS = ['tshirts', 'hoodies', 'crewnecks'];
 
   form = this.fb.group({
-    id:            ['', Validators.required],
     name:          ['', Validators.required],
     cat:           ['tshirts', Validators.required],
     drop:          ['', Validators.required],
@@ -56,9 +57,32 @@ export class AdminProductFormComponent implements OnInit {
     description:   [''],
   });
 
+  isSale = toSignal(this.form.get('isSale')!.valueChanges, { initialValue: false });
+
   ngOnInit(): void {
-    const firstDrop = this.drops()[0]?.id;
-    if (firstDrop) this.form.patchValue({ drop: firstDrop });
+    this.dropService.getDrops().pipe(take(1)).subscribe();
+
+    this.dropService.drops$.pipe(
+      filter(d => d.length > 0),
+      take(1)
+    ).subscribe(drops => {
+      this.form.patchValue({ drop: drops[0].id });
+    });
+
+    // Si no está en oferta, price sigue a originalPrice
+    this.form.get('originalPrice')!.valueChanges.subscribe(original => {
+      if (!this.form.get('isSale')!.value) {
+        this.form.patchValue({ price: original }, { emitEvent: false });
+      }
+    });
+
+    // Al desactivar oferta, sincronizar price con originalPrice
+    this.form.get('isSale')!.valueChanges.subscribe(isSale => {
+      if (!isSale) {
+        const original = this.form.get('originalPrice')!.value;
+        this.form.patchValue({ price: original }, { emitEvent: false });
+      }
+    });
   }
 
   get hasMainImage(): boolean {
@@ -132,18 +156,13 @@ export class AdminProductFormComponent implements OnInit {
     this.progress.set(0);
 
     try {
-      // 🔧 MOCK: simular upload con delay
-      await new Promise(resolve => setTimeout(resolve, 1200));
-      for (let p = 0; p <= 100; p += 20) {
-        this.progress.set(p);
-        await new Promise(resolve => setTimeout(resolve, 80));
-      }
-
-      const mockUrl = `https://res.cloudinary.com/mock/image/upload/foto_${i + 1}.jpg`;
+      const result = await this.cloudinary.upload(file, 'product', (pct) => this.progress.set(pct));
       const nextUrls = [...this.imageUrls()];
-      nextUrls[i] = mockUrl;
+      const nextIds  = [...this.publicIds()];
+      nextUrls[i] = result.url;
+      nextIds[i]  = result.publicId;
       this.imageUrls.set(nextUrls);
-
+      this.publicIds.set(nextIds);
       this.goTo(Math.min(i + 1, this.maxPhotos - 1));
     } catch {
       this.errorMsg.set('Error al subir la imagen.');
@@ -151,6 +170,7 @@ export class AdminProductFormComponent implements OnInit {
       this.uploading.set(false);
       this.progress.set(0);
     }
+
   }
 
   back() {
@@ -165,7 +185,9 @@ export class AdminProductFormComponent implements OnInit {
     this.slot?.setPreview(src);
   }
 
-  cancel(): void {
+  async cancel(): Promise<void> {
+    const ids = this.publicIds().filter(Boolean) as string[];
+    if (ids.length) await Promise.all(ids.map(id => this.cloudinary.delete(id)));
     this.resetForm();
     this.canceled.emit();
   }
@@ -184,8 +206,13 @@ export class AdminProductFormComponent implements OnInit {
       const val = this.form.value;
       const images = (this.imageUrls() as (string | null)[]).filter(Boolean) as string[];
 
+      // Generar ID automático basado en los productos existentes
+      const existing = this.productService['_products$'].getValue();
+      const nextNum = (existing.length + 1).toString().padStart(2, '0');
+      const autoId = `p${nextNum}`;
+
       await this.productService.createProduct({
-        id:            val.id!,
+        id:            autoId,
         name:          val.name!,
         cat:           val.cat!,
         drop:          val.drop!,
@@ -210,6 +237,7 @@ export class AdminProductFormComponent implements OnInit {
 
   private resetForm(): void {
     const firstDrop = this.drops()[0]?.id ?? '';
+    this.publicIds.set([null, null, null, null]);
     this.form.reset({
       cat: 'tshirts', drop: firstDrop,
       isNew: true, isSale: false,

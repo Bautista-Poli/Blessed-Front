@@ -1,9 +1,8 @@
-<div class="pf-two-col">
+<form class="pf-two-col" [formGroup]="form" (ngSubmit)="submit()">
   <!-- IZQ: FOTOS -->
   <section class="pf-col pf-col--photos">
     <p class="pf-section-label">Fotos del producto</p>
     <p class="pf-section-hint">La primera foto es la principal. Tocá “Siguiente” para subir y avanzar.</p>
-
     <div class="pf-slot-main">
       <app-image-upload-slot
         [label]="(index() + 1).toString()"
@@ -44,17 +43,10 @@
 
     <div class="adm-form-grid">
 
-      <!-- ID -->
-      <div class="adm-field" [class.err]="fieldErr('id')">
-        <label>ID único</label>
-        <input type="text" formControlName="id" placeholder="p09" />
-        @if (fieldErr('id')) { <span class="adm-err">Requerido</span> }
-      </div>
-
       <!-- Nombre -->
       <div class="adm-field" [class.err]="fieldErr('name')">
         <label>Nombre</label>
-        <input type="text" formControlName="name" placeholder='"SQUAD" TEE' />
+        <input type="text" formControlName="name" placeholder='...' />
         @if (fieldErr('name')) { <span class="adm-err">Requerido</span> }
       </div>
 
@@ -81,15 +73,15 @@
 
       <!-- Precio -->
       <div class="adm-field" [class.err]="fieldErr('price')">
-        <label>Precio ARS</label>
-        <input type="number" formControlName="price" placeholder="29900" />
+        <label>Precio con descuento</label>
+        <input type="number" formControlName="price" placeholder="0" />
         @if (fieldErr('price')) { <span class="adm-err">Ingresá un precio válido</span> }
       </div>
 
       <!-- Precio original -->
       <div class="adm-field" [class.err]="fieldErr('originalPrice')">
         <label>Precio original ARS</label>
-        <input type="number" formControlName="originalPrice" placeholder="46000" />
+        <input type="number" formControlName="originalPrice" placeholder="0" />
         @if (fieldErr('originalPrice')) { <span class="adm-err">Requerido</span> }
       </div>
 
@@ -131,4 +123,4 @@
       </button>
     </div>
   </section>
-</div>
+</form>
