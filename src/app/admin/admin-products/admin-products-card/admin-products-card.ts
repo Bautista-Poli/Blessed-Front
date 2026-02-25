@@ -1,8 +1,8 @@
 // src/app/admin/components/admin-product-card/admin-product-card.ts
 
 import { CommonModule } from '@angular/common';
-import { CatalogProduct } from '../../../../product.service';
 import { Component, ElementRef, EventEmitter, Input, Output, ViewChild } from '@angular/core';
+import { CatalogProduct } from '../../../interfaces/product';
 
 @Component({
   selector: 'app-admin-product-card',

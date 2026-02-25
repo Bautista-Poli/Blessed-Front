@@ -1,0 +1,57 @@
+<section class="hero-split-container">
+  
+  @if (drops[0]; as left) {
+    <a [href]="left.link" 
+       class="hero-panel hero-panel--left"
+       [style.flex]="getHeroPanelFlex('left')"
+       (mouseenter)="onHeroPanelEnter('left')"
+       (mouseleave)="onHeroPanelLeave()">
+      
+      <div class="hero-panel-bg">
+        <img [src]="left.imageUrl" [alt]="left.title" />
+      </div>
+      
+      <div class="hero-panel-overlay"></div>
+      
+      <div class="hero-panel-content hero-content--left">
+        <span class="hero-eyebrow">{{ left.eyebrow }}</span>
+        <h1 class="hero-title">
+          {{ left.title }}<br>
+        </h1>
+        <span class="hero-eyebrow">{{ left.italicTitle }}</span>
+        <span class="btn-hero-fake">Ver Colección</span>
+      </div>
+    </a>
+  }
+
+  <div class="hero-divider">
+    <span class="hero-logo-center">
+      <img src="assets/Logo1.png" alt="Logo">
+    </span>
+  </div>
+
+  @if (drops[1]; as right) {
+    <a [href]="right.link" 
+       class="hero-panel hero-panel--right"
+       [style.flex]="getHeroPanelFlex('right')"
+       (mouseenter)="onHeroPanelEnter('right')"
+       (mouseleave)="onHeroPanelLeave()">
+      
+      <div class="hero-panel-bg">
+        <img [src]="right.imageUrl" [alt]="right.title" />
+      </div>
+      
+      <div class="hero-panel-overlay"></div>
+      
+      <div class="hero-panel-content hero-content--right">
+        <span class="hero-eyebrow">{{ right.eyebrow }}</span>
+        <h1 class="hero-title">
+          {{ right.title }}<br>
+        </h1>
+        <em>{{ right.italicTitle }}</em>
+        <span class="btn-hero-fake">Ver Colección</span>
+      </div>
+    </a>
+  }
+
+</section>

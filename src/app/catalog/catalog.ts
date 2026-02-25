@@ -9,12 +9,10 @@ import {
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
-import { CartService } from '../../cart.service';
+import { CartService } from '../services/cart.service';
 import { CatalogHeader } from '../catalog-header/catalog-header';
-import { CatalogProduct, ProductService } from '../../product.service';
-
-// Re-exportamos para que otros componentes puedan importar desde acá
-export type { CatalogProduct };
+import { ProductService } from '../services/product.service';
+import { CatalogProduct } from '../interfaces/product';
 
 @Component({
   selector: 'app-catalogo',

@@ -22,7 +22,7 @@
   <section class="drop-hero" [class.visible]="heroVisible">
 
     <div class="drop-hero-bg">
-      <img [src]="config.heroImage" [alt]="config.label" />
+      <img [src]="config.hero_image" [alt]="config.label" />
     </div>
 
     <div class="drop-hero-overlay"></div>
@@ -42,12 +42,12 @@
       <div class="drop-hero-meta">
         <div class="drop-meta-item">
           <span class="drop-meta-label">Piezas</span>
-          <span class="drop-meta-val">{{ config.totalPieces }}</span>
+          <span class="drop-meta-val">{{ config.total_pieces }}</span>
         </div>
         <div class="drop-meta-divider"></div>
         <div class="drop-meta-item">
           <span class="drop-meta-label">Temporada</span>
-          <span class="drop-meta-val">{{ config.releaseDate }}</span>
+          <span class="drop-meta-val">{{ config.release_date }}</span>
         </div>
         <div class="drop-meta-divider"></div>
         <div class="drop-meta-item">
@@ -82,10 +82,10 @@
   <!-- ══════════════════════════════════════════════════════
        SPLIT
   ══════════════════════════════════════════════════════ -->
-  @if (config.heroImage2) {
+  @if (config.hero_image2) {
     <section class="drop-split drop-reveal">
       <div class="drop-split-img">
-        <img [src]="config.heroImage2" [alt]="config.label" />
+        <img [src]="config.hero_image2" [alt]="config.label" />
       </div>
       <div class="drop-split-body">
         <span class="drop-split-tag">Drop {{ config.number }}</span>

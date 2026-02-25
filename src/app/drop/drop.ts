@@ -8,23 +8,11 @@ import {
 } from '@angular/core';
 import { CommonModule }   from '@angular/common';
 import { Router, RouterModule }   from '@angular/router';
-import { CatalogProduct } from '../catalog/catalog';
-import { CartService }    from '../../cart.service';
+import { CartService }    from '../services/cart.service';
 import { CatalogHeader }  from '../catalog-header/catalog-header';
 import { Subscription, map } from 'rxjs';
-
-export interface DropConfig {
-  id:     string;
-  number: string;
-  label:       string;
-  tagline:     string;
-  description: string;
-  heroImage:   string;
-  heroImage2?: string;
-  accentColor: string;
-  releaseDate: string;
-  totalPieces: number;
-}
+import { DropConfig } from '../interfaces/drop';
+import { CatalogProduct } from '../interfaces/product';
 
 @Component({
   selector: 'app-drop-landing',
@@ -91,7 +79,7 @@ export class Drop implements OnInit, AfterViewInit, OnDestroy {
   // ── Lifecycle ──────────────────────────────────────────────
   ngOnInit(): void {
     if (this.config) {
-      document.documentElement.style.setProperty('--drop-accent', this.config.accentColor);
+      document.documentElement.style.setProperty('--drop-accent', this.config.accent_color);
     }
 
     // Suscripción al carrito para el counter del header

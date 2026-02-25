@@ -2,25 +2,8 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { BehaviorSubject, Observable, tap } from 'rxjs';
-import { DropConfig } from './app/drop/drop';
-
-export interface ProductColor { name: string; hex: string; }
-export interface ProductStock { size: string; color: string | null; stock: number; }
-
-export interface CatalogProduct {
-  id:            string;
-  cat:           string;
-  drop:          string;
-  name:          string;
-  price:         number;
-  originalPrice: number;
-  isNew:         boolean;
-  isSale:        boolean;
-  images:        string[];
-  description?:  string;
-  colors:        ProductColor[];
-  stock:         ProductStock[];
-}
+import { DropConfig } from '../interfaces/drop';
+import { CatalogProduct } from '../interfaces/product';
 
 @Injectable({ providedIn: 'root' })
 export class ProductService {

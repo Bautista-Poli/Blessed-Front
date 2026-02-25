@@ -1,6 +1,6 @@
 import { Component, Input, Output, EventEmitter, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { CartService } from '../../cart.service';
+import { CartService } from '../services/cart.service';
 import { Subscription, map } from 'rxjs'; // ◄ Asegúrate de importar map
 import { RouterModule } from '@angular/router';
 

@@ -1,7 +1,7 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, ActivatedRoute } from '@angular/router';
-import { CartService } from '../../cart.service';
+import { CartService } from '../services/cart.service';
 
 type ResultStatus = 'success' | 'failure' | 'pending';
 

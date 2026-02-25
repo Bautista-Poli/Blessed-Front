@@ -3,8 +3,9 @@ import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
 import { Drop } from './drop';
-import { DropConfig } from './drop';
-import { CatalogProduct, ProductService } from '../../product.service';
+import { ProductService } from '../services/product.service';
+import { DropConfig } from '../interfaces/drop';
+import { CatalogProduct } from '../interfaces/product';
 
 @Component({
   selector: 'app-drop-page',

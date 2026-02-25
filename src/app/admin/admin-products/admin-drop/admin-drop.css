@@ -1,0 +1,399 @@
+/* src/app/admin/drops/admin-drops.css */
+
+.drops-page {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* ── FORM CARD ───────────────────────────────────────────────── */
+/* Forzamos fondo blanco y estilos claros dentro del form de drops,
+   independientemente del tema oscuro del panel */
+
+.drops-page .adm-form-card {
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
+  padding: 1.75rem;
+}
+
+.drops-page .adm-form-title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #111;
+  margin: 0 0 1.5rem;
+}
+
+.drops-page .adm-form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 1rem;
+}
+
+.drops-page .adm-field {
+  display: flex;
+  flex-direction: column;
+  gap: .35rem;
+}
+
+.drops-page .adm-field.adm-field-wide {
+  grid-column: 1 / -1;
+}
+
+.drops-page .adm-field label {
+  font-size: .78rem;
+  font-weight: 600;
+  color: #374151;
+}
+
+.drops-page .adm-field input,
+.drops-page .adm-field textarea,
+.drops-page .adm-field select {
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: .55rem .75rem;
+  font-size: .85rem;
+  color: #111;
+  outline: none;
+  transition: border-color .15s;
+  width: 100%;
+  box-sizing: border-box;
+  font-family: inherit;
+}
+
+.drops-page .adm-field input:focus,
+.drops-page .adm-field textarea:focus {
+  border-color: #111;
+  background: #fff;
+}
+
+.drops-page .adm-field input:disabled {
+  background: #f3f4f6;
+  color: #9ca3af;
+  cursor: not-allowed;
+}
+
+.drops-page .adm-field.err input,
+.drops-page .adm-field.err textarea {
+  border-color: #ef4444;
+}
+
+.drops-page .adm-err {
+  font-size: .72rem;
+  color: #ef4444;
+}
+
+.drops-page .adm-opt {
+  font-weight: 400;
+  color: #9ca3af;
+}
+
+/* Preview — altura controlada */
+.drops-page .adm-preview {
+  grid-column: 1 / -1;
+  position: relative;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid #e5e7eb;
+  max-height: 1020px;        /* ← esto evita la foto enorme */
+}
+
+.drops-page .adm-preview img {
+  width: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.drops-page .adm-preview-label {
+  position: absolute;
+  bottom: .5rem;
+  left: .75rem;
+  background: rgba(0,0,0,.55);
+  color: #fff;
+  font-size: .7rem;
+  font-weight: 600;
+  padding: .2rem .55rem;
+  border-radius: 999px;
+  letter-spacing: .04em;
+}
+
+/* Flags / toggle */
+.drops-page .adm-flags {
+  grid-column: 1 / -1;
+  display: flex;
+  gap: 1.5rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.drops-page .adm-toggle {
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+  font-size: .82rem;
+  color: #374151;
+  cursor: pointer;
+  user-select: none;
+}
+
+.drops-page .adm-toggle input[type="checkbox"] {
+  width: auto;
+  accent-color: #111;
+  cursor: pointer;
+}
+
+/* Footer del form */
+.drops-page .adm-form-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: .75rem;
+  margin-top: 1.5rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid #f3f4f6;
+}
+
+.drops-page .adm-btn-cancel {
+  background: #f3f4f6;
+  color: #374151;
+  border: none;
+  border-radius: 8px;
+  padding: .55rem 1.25rem;
+  font-size: .85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background .15s;
+}
+
+.drops-page .adm-btn-cancel:hover { background: #e5e7eb; }
+
+.drops-page .adm-btn-save {
+  background: #111;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: .55rem 1.5rem;
+  font-size: .85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background .15s, opacity .15s;
+}
+
+.drops-page .adm-btn-save:hover:not(:disabled) { background: #333; }
+.drops-page .adm-btn-save:disabled { opacity: .5; cursor: not-allowed; }
+
+.drops-page .adm-field-color .color-input-wrap {
+  display: flex;
+  gap: .5rem;
+  align-items: center;
+}
+
+.drops-page .adm-field-color input[type="color"] {
+  width: 44px;
+  height: 38px;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 2px;
+  cursor: pointer;
+  flex-shrink: 0;
+  background: #fff;
+}
+
+.drops-page .adm-field-color input[type="text"] {
+  flex: 1;
+}
+
+.drops-page .adm-hint {
+  font-size: .72rem;
+  color: #9ca3af;
+  margin-top: .25rem;
+  display: block;
+}
+
+/* ── DROP CARDS ─────────────────────────────────────────────── */
+.drop-card {
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  overflow: hidden;
+  display: grid;
+  grid-template-columns: 180px 1fr auto;
+  align-items: stretch;
+  transition: box-shadow 0.2s, opacity 0.2s;
+}
+
+.drop-card:hover {
+  box-shadow: 0 4px 16px rgba(0,0,0,.08);
+}
+
+.drop-card.inactive {
+  opacity: 0.6;
+}
+
+.drop-card-img {
+  position: relative;
+  overflow: hidden;
+}
+
+.drop-card-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.drop-card-img-placeholder {
+  width: 100%;
+  height: 100%;
+  min-height: 140px;
+  background: #f3f4f6;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: .75rem;
+  color: #9ca3af;
+}
+
+.drop-card-accent {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+}
+
+.drop-card-body {
+  padding: 1.25rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: .75rem;
+}
+
+.drop-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+}
+
+.drop-card-number {
+  font-size: .7rem;
+  font-weight: 700;
+  color: #9ca3af;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+}
+
+.drop-card-label {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #111;
+  margin: .1rem 0;
+}
+
+.drop-card-tagline {
+  font-size: .8rem;
+  color: #6b7280;
+  margin: 0;
+  font-style: italic;
+}
+
+.drop-card-desc {
+  font-size: .82rem;
+  color: #374151;
+  line-height: 1.5;
+  margin: 0;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.drop-card-meta {
+  display: flex;
+  gap: 1.25rem;
+  font-size: .78rem;
+  color: #6b7280;
+  margin-top: auto;
+}
+
+.drop-badge {
+  padding: .25rem .65rem;
+  border-radius: 999px;
+  font-size: .68rem;
+  font-weight: 700;
+  letter-spacing: .06em;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.drop-badge.active  { background: #d1fae5; color: #065f46; }
+.drop-badge.inactive { background: #f3f4f6; color: #6b7280; }
+
+/* ── ACTIONS ─────────────────────────────────────────────────── */
+.drop-card-actions {
+  display: flex;
+  flex-direction: column;
+  gap: .5rem;
+  padding: 1.25rem 1.25rem 1.25rem .5rem;
+  justify-content: center;
+  border-left: 1px solid #f3f4f6;
+}
+
+.drop-card-actions button {
+  padding: .45rem 1rem;
+  border-radius: 8px;
+  font-size: .78rem;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  transition: background .15s, opacity .15s;
+  white-space: nowrap;
+}
+
+.drop-card-actions button:disabled {
+  opacity: .5;
+  cursor: not-allowed;
+}
+
+.adm-btn-toggle              { background: #e0f2fe; color: #0369a1; }
+.adm-btn-toggle:hover:not(:disabled) { background: #bae6fd; }
+.adm-btn-toggle.deactivate   { background: #fef3c7; color: #92400e; }
+.adm-btn-toggle.deactivate:hover:not(:disabled) { background: #fde68a; }
+.adm-btn-edit                { background: #f3f4f6; color: #374151; }
+.adm-btn-edit:hover          { background: #e5e7eb; }
+.adm-btn-delete              { background: #fee2e2; color: #991b1b; }
+.adm-btn-delete:hover:not(:disabled) { background: #fecaca; }
+
+/* ── NAV BADGE ───────────────────────────────────────────────── */
+.adm-nav-badge {
+  margin-left: auto;
+  background: #111;
+  color: #fff;
+  font-size: .62rem;
+  font-weight: 700;
+  padding: .15rem .45rem;
+  border-radius: 999px;
+  line-height: 1.4;
+}
+
+/* ── RESPONSIVE ──────────────────────────────────────────────── */
+@media (max-width: 700px) {
+  .drop-card {
+    grid-template-columns: 1fr;
+  }
+
+  .drop-card-img {
+    height: 180px;
+  }
+
+  .drop-card-actions {
+    flex-direction: row;
+    border-left: none;
+    border-top: 1px solid #f3f4f6;
+    padding: 1rem 1.25rem;
+  }
+
+  .drop-card-actions button {
+    flex: 1;
+  }
+}

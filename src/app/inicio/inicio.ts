@@ -5,14 +5,17 @@ import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 
 import { IgCarousel } from '../ig-carousel/ig-carousel';
-import { CartService } from '../../cart.service';
+import { CartService } from '../services/cart.service';
 import { CartDrawer } from '../cart-drawer/cart-drawer';
-import { ProductService, CatalogProduct } from '../../product.service'; // Importamos el servicio de productos
+import { ProductService } from '../services/product.service'; // Importamos el servicio de productos
+import { PanelInicioComponent } from './panel-inicio/panel-inicio';
+import { DropConfig } from '../interfaces/drop';
+import { CatalogProduct } from '../interfaces/product';
 
 @Component({
   selector: 'app-inicio',
   standalone: true,
-  imports: [CommonModule, FormsModule, IgCarousel, RouterLink, CartDrawer],
+  imports: [CommonModule, FormsModule, IgCarousel, RouterLink, CartDrawer, PanelInicioComponent],
   templateUrl: './inicio.html',
   styleUrls: [
     './inicio.css',
@@ -23,6 +26,8 @@ export class Inicio implements OnInit, OnDestroy {
   private cartService    = inject(CartService);
   private productService = inject(ProductService);
   private cdr            = inject(ChangeDetectorRef);
+  drops = signal<DropConfig[]>([]);
+  loadingDrops = signal(true);
 
   // ── ESTADO DE PRODUCTOS DEL BACKEND ──
   featuredProducts = signal<CatalogProduct[]>([]);
@@ -49,7 +54,8 @@ export class Inicio implements OnInit, OnDestroy {
   get cartCount(): number { return this.cartService.count; }
 
   ngOnInit(): void {
-    this.loadFeaturedProducts(); // Cargar productos al iniciar
+    this.loadFeaturedProducts();
+    this.loadDrops(); // ← nuevo
     this.initScrollReveal();
     this.initNavbarScroll();
     this.initSmoothScroll();
@@ -59,6 +65,16 @@ export class Inicio implements OnInit, OnDestroy {
     if (this.scrollListener) {
       window.removeEventListener('scroll', this.scrollListener);
     }
+  }
+  loadDrops(): void {
+    this.loadingDrops.set(true);
+    this.productService.getDrops().subscribe({
+      next: (drops) => {
+        this.drops.set(drops);
+        this.loadingDrops.set(false);
+      },
+      error: () => this.loadingDrops.set(false)
+    });
   }
 
   // ── CARGA DE PRODUCTOS ──────────────────────────────────────

@@ -1,8 +1,9 @@
 import { Component, OnInit, HostListener, inject, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
-import { CartService } from '../../cart.service';
-import { ProductService, CatalogProduct } from '../../product.service';
+import { CartService } from '../services/cart.service';
+import { ProductService } from '../services/product.service';
+import { CatalogProduct } from '../interfaces/product';
 
 @Component({
   selector: 'app-producto-detalle',

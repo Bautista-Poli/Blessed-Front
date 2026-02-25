@@ -1,17 +1,21 @@
-// src/app/admin/products/admin-products.ts
+// src/app/admin/products/admin-products.ts  (VERSIÓN ACTUALIZADA)
 import { Component, inject, signal, computed, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { ProductService } from '../../../product.service';
 import { AuthService } from '../auth.service';
 import { AdminProductCardComponent } from './admin-products-card/admin-products-card';
+import { ProductService } from '../../services/product.service';
+import { DropService } from '../../services/drop.service';
+import { AdminDropsComponent } from './admin-drop/admin-drop';
+
+type AdminTab = 'productos' | 'drops';
 
 @Component({
   selector: 'app-admin-products',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, AdminProductCardComponent],
+  imports: [CommonModule, ReactiveFormsModule, AdminProductCardComponent, AdminDropsComponent],
   templateUrl: './admin-products.html',
   styleUrl: './admin-products.css',
 })
@@ -19,8 +23,13 @@ export class AdminProductsComponent implements OnInit {
   private auth           = inject(AuthService);
   private router         = inject(Router);
   private productService = inject(ProductService);
+  private dropService    = inject(DropService);                       // ← nuevo
   private fb             = inject(FormBuilder);
 
+  // ── Tabs ──────────────────────────────────────────────────────
+  activeTab = signal<AdminTab>('productos');
+
+  // ── Productos ─────────────────────────────────────────────────
   products     = toSignal(this.productService.products$, { initialValue: [] });
   saving       = signal(false);
   deleting     = signal<string | null>(null);
@@ -37,6 +46,10 @@ export class AdminProductsComponent implements OnInit {
     );
   });
 
+  // ── Drops (badge en sidebar) ───────────────────────────────────
+  drops           = toSignal(this.dropService.drops$, { initialValue: [] });
+  activeDropsCount = computed(() => this.drops().filter(d => d.active).length);
+
   readonly CATS   = ['tshirts', 'hoodies', 'crewnecks'];
   readonly DROPS  = ['drop01', 'drop02'];
   readonly SIZES  = ['XS', 'S', 'M', 'L', 'XL'];
@@ -50,8 +63,8 @@ export class AdminProductsComponent implements OnInit {
     originalPrice: [0, [Validators.required, Validators.min(1)]],
     isNew:         [true],
     isSale:        [false],
-    image1:        ['', Validators.required],  // imagen principal
-    image2:        [''],                        // hover
+    image1:        ['', Validators.required],
+    image2:        [''],
     image3:        [''],
     image4:        [''],
     description:   [''],
@@ -62,6 +75,7 @@ export class AdminProductsComponent implements OnInit {
       this.router.navigate(['/admin/login']);
     }
     this.productService.getProducts().subscribe();
+    this.dropService.getDrops().subscribe();                         // ← nuevo
   }
 
   logout(): void {
@@ -89,8 +103,6 @@ export class AdminProductsComponent implements OnInit {
 
     try {
       const val = this.form.value;
-
-      // Construir array de imágenes filtrando vacíos
       const images = [val.image1, val.image2, val.image3, val.image4]
         .filter(url => !!url) as string[];
 
@@ -130,15 +142,6 @@ export class AdminProductsComponent implements OnInit {
     } finally {
       this.deleting.set(null);
     }
-  }
-
-  formatPrice(n: number): string {
-    return new Intl.NumberFormat('es-AR', { style: 'currency', currency: 'ARS', minimumFractionDigits: 0 }).format(n);
-  }
-
-  discount(p: any): number {
-    if (!p.isSale || p.originalPrice === p.price) return 0;
-    return Math.round((1 - p.price / p.originalPrice) * 100);
   }
 
   fieldErr(field: string): boolean {

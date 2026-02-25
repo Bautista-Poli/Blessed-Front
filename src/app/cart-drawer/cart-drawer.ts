@@ -3,7 +3,7 @@ import { Component, OnInit, OnDestroy, inject } from '@angular/core';
 import { CommonModule }                 from '@angular/common';
 import { Router, RouterModule }                 from '@angular/router';
 import { Subscription }                 from 'rxjs';
-import { CartItem, CartService } from '../../cart.service';
+import { CartItem, CartService } from '../services/cart.service';
 
 @Component({
   selector: 'app-cart-drawer',

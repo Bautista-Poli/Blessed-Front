@@ -1,0 +1,197 @@
+<!-- src/app/admin/drops/admin-drops.html -->
+<div class="drops-page">
+
+  <!-- Topbar -->
+  <div class="adm-topbar">
+    <div>
+      <h1 class="adm-title">Drops</h1>
+      <p class="adm-subtitle">{{ drops().length }} drops en total · {{ activeDrops().length }} activos</p>
+    </div>
+    <button class="adm-btn-add" (click)="toggleForm()">
+      @if (showForm()) { ✕ Cancelar } @else { + Nuevo drop }
+    </button>
+  </div>
+
+  <!-- Alertas -->
+  @if (successMsg()) {
+    <div class="adm-alert success">✓ {{ successMsg() }}</div>
+  }
+  @if (errorMsg()) {
+    <div class="adm-alert error">✕ {{ errorMsg() }}</div>
+  }
+
+  <!-- ══ FORMULARIO ══════════════════════════════════════════ -->
+  @if (showForm()) {
+    <div class="adm-form-card">
+      <h2 class="adm-form-title">
+        @if (editingId()) { Editar drop } @else { Nuevo drop }
+      </h2>
+
+      <form [formGroup]="form" (ngSubmit)="submit()" novalidate>
+        <div class="adm-form-grid">
+
+          <!-- ID -->
+          <div class="adm-field" [class.err]="fieldErr('id')">
+            <label>ID único</label>
+            <input type="text" formControlName="id" placeholder="drop03" />
+            @if (fieldErr('id')) { <span class="adm-err">Requerido</span> }
+            @if (editingId()) { <span class="adm-hint">No se puede cambiar en edición</span> }
+          </div>
+
+          <!-- Number -->
+          <div class="adm-field" [class.err]="fieldErr('number')">
+            <label>Número</label>
+            <input type="text" formControlName="number" placeholder="03" />
+            @if (fieldErr('number')) { <span class="adm-err">Requerido</span> }
+          </div>
+
+          <!-- Label -->
+          <div class="adm-field" [class.err]="fieldErr('label')">
+            <label>Label</label>
+            <input type="text" formControlName="label" placeholder="DROP 03" />
+            @if (fieldErr('label')) { <span class="adm-err">Requerido</span> }
+          </div>
+
+          <!-- Tagline -->
+          <div class="adm-field" [class.err]="fieldErr('tagline')">
+            <label>Tagline</label>
+            <input type="text" formControlName="tagline" placeholder="NUEVO CAPÍTULO" />
+            @if (fieldErr('tagline')) { <span class="adm-err">Requerido</span> }
+          </div>
+
+          <!-- Release date -->
+          <div class="adm-field" [class.err]="fieldErr('release_date')">
+            <label>Fecha de lanzamiento</label>
+            <input type="text" formControlName="release_date" placeholder="2025-09-01" />
+            @if (fieldErr('release_date')) { <span class="adm-err">Requerido</span> }
+          </div>
+
+          <!-- Total pieces -->
+          <div class="adm-field">
+            <label>Total de piezas</label>
+            <input type="number" formControlName="total_pieces" placeholder="0" min="0" />
+          </div>
+
+          <!-- Accent color -->
+          <div class="adm-field adm-field-color">
+            <label>Color de acento</label>
+            <div class="color-input-wrap">
+              <input type="color" formControlName="accent_color" />
+              <input type="text" formControlName="accent_color" placeholder="#e8e4dc" />
+            </div>
+          </div>
+
+          <!-- Hero image -->
+          <div class="adm-field adm-field-wide" [class.err]="fieldErr('hero_image')">
+            <label>URL hero image principal</label>
+            <input type="text" formControlName="hero_image" placeholder="assets/Drops/..." (input)="onImageInput($event)" />
+            @if (fieldErr('hero_image')) { <span class="adm-err">Requerido</span> }
+          </div>
+
+          <!-- Hero image 2 -->
+          <div class="adm-field adm-field-wide">
+            <label>URL hero image 2 <span class="adm-opt">(opcional)</span></label>
+            <input type="text" formControlName="hero_image2" placeholder="assets/Drops/..." />
+          </div>
+
+          <!-- Descripción -->
+          <div class="adm-field adm-field-wide" [class.err]="fieldErr('description')">
+            <label>Descripción</label>
+            <textarea formControlName="description" rows="3" placeholder="Descripción del drop..."></textarea>
+            @if (fieldErr('description')) { <span class="adm-err">Requerido</span> }
+          </div>
+
+          <!-- Toggle activo -->
+          <div class="adm-field adm-flags">
+            <label class="adm-toggle">
+              <input type="checkbox" formControlName="active" />
+              <span class="adm-toggle-track"></span>
+              <span>Activo / visible</span>
+            </label>
+          </div>
+
+          <!-- Preview -->
+          @if (previewUrl()) {
+            <div class="adm-preview">
+              <img [src]="previewUrl()!" alt="preview hero" />
+              <span class="adm-preview-label">Preview Hero</span>
+            </div>
+          }
+
+        </div>
+
+        <div class="adm-form-footer">
+          <button type="button" class="adm-btn-cancel" (click)="toggleForm()">Cancelar</button>
+          <button type="submit" class="adm-btn-save" [disabled]="saving()">
+            @if (saving()) { Guardando... } @else if (editingId()) { Actualizar drop } @else { Crear drop }
+          </button>
+        </div>
+      </form>
+    </div>
+  }
+
+  <!-- ══ LISTA DE DROPS ══════════════════════════════════════ -->
+  @if (drops().length === 0) {
+    <div class="adm-empty">
+      <p>No hay drops creados todavía.</p>
+    </div>
+  }
+
+  @for (drop of drops(); track drop.id) {
+    <div class="drop-card" [class.inactive]="!drop.active">
+
+      <!-- Hero thumbnail -->
+      <div class="drop-card-img">
+        @if (drop.hero_image) {
+          <img [src]="drop.hero_image" [alt]="drop.label" />
+        } @else {
+          <div class="drop-card-img-placeholder">Sin imagen</div>
+        }
+        <div class="drop-card-accent" [style.background]="drop.accent_color"></div>
+      </div>
+
+      <!-- Info -->
+      <div class="drop-card-body">
+        <div class="drop-card-header">
+          <div>
+            <span class="drop-card-number">{{ drop.number }}</span>
+            <h3 class="drop-card-label">{{ drop.label }}</h3>
+            <p class="drop-card-tagline">{{ drop.tagline }}</p>
+          </div>
+          <span class="drop-badge" [class.active]="drop.active" [class.inactive]="!drop.active">
+            {{ drop.active ? 'ACTIVO' : 'INACTIVO' }}
+          </span>
+        </div>
+
+        <p class="drop-card-desc">{{ drop.description }}</p>
+
+        <div class="drop-card-meta">
+          <span>📅 {{ drop.release_date }}</span>
+          <span>👕 {{ drop.total_pieces }} piezas</span>
+        </div>
+      </div>
+
+      <!-- Acciones -->
+      <div class="drop-card-actions">
+        <button
+          class="adm-btn-toggle"
+          [class.deactivate]="drop.active"
+          [disabled]="toggling() === drop.id"
+          (click)="toggleActive(drop)">
+          @if (toggling() === drop.id) { ... }
+          @else if (drop.active) { Desactivar }
+          @else { Activar }
+        </button>
+        <button class="adm-btn-edit" (click)="editDrop(drop)">Editar</button>
+        <button
+          class="adm-btn-delete"
+          [disabled]="deleting() === drop.id"
+          (click)="deleteDrop(drop)">
+          @if (deleting() === drop.id) { Eliminando... } @else { Eliminar }
+        </button>
+      </div>
+
+    </div>
+  }
+
+</div>

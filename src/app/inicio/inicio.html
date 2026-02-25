@@ -27,9 +27,12 @@
         <li class="has-dropdown">
           <a href="#">Colecciones</a>
           <div class="dropdown">
-            <a href="/drops/drop01">Drop 01</a>
-            <a href="/drops/drop02">Drop 02</a>
-            <a href="#">Colección 25'</a>
+            @for (drop of drops(); track drop.id) {
+              <a [routerLink]="['/drops', drop.id]">DROP {{ drop.number }}</a>
+            }
+            @if (loadingDrops()) {
+              <span class="dropdown-loading">Cargando...</span>
+            }
           </div>
         </li>
       </ul>
@@ -81,11 +84,13 @@
   <div class="mobile-menu" [class.open]="mobileMenuOpen">
     <div class="mobile-menu-inner">
       <a href="#" class="mobile-nav-link" (click)="closeMobileMenu()">Shop</a>
-      <a href="/drops/drop01" class="mobile-nav-link" (click)="closeMobileMenu()">Drop 01</a>
-      <a href="/drops/drop02" class="mobile-nav-link" (click)="closeMobileMenu()">Drop 02</a>
-      <a href="#" class="mobile-nav-link" (click)="closeMobileMenu()">Colección 25'</a>
-      <a href="#" class="mobile-nav-link" (click)="closeMobileMenu()">Contacto</a>
-      <a href="#" class="mobile-nav-link" (click)="closeMobileMenu()">Guía de talles</a>
+        @for (drop of drops(); track drop.id) {
+          <a [routerLink]="['/drops', drop.id]"
+            class="mobile-nav-link"
+            (click)="closeMobileMenu()">
+            DROP {{ drop.number }}
+          </a>
+        }
     </div>
   </div>
 
@@ -94,44 +99,8 @@
   ══════════════════════════════════════════════ -->
   <section class="hero" id="hero">
 
-    <!-- Panel izquierdo -->
-    <div class="hero-panel hero-panel--left"
-         [style.flex]="getHeroPanelFlex('left')"
-         (mouseenter)="onHeroPanelEnter('left')"
-         (mouseleave)="onHeroPanelLeave()">
-      <div class="hero-panel-bg">
-        <img src="assets/IndexSlide-1.webp" alt="Drop 02" />
-      </div>
-      <div class="hero-panel-overlay"></div>
-      <div class="hero-panel-content hero-content--left">
-        <span class="hero-eyebrow">Nueva colección</span>
-        <h1 class="hero-title">DROP<br><em>02</em></h1>
-        <a href="/drops/drop02" class="btn-hero">Descubrí</a>
-      </div>
-    </div>
-
-    <!-- Línea divisoria central -->
-    <div class="hero-divider">
-      <span class="hero-logo-center">
-        <img src="assets/Logo1.png">
-      </span>
-    </div>
-
-    <!-- Panel derecho -->
-    <div class="hero-panel hero-panel--right"
-         [style.flex]="getHeroPanelFlex('right')"
-         (mouseenter)="onHeroPanelEnter('right')"
-         (mouseleave)="onHeroPanelLeave()">
-      <div class="hero-panel-bg">
-        <img src="assets/IndexSlide-2.webp" alt="Colección 25'" />
-      </div>
-      <div class="hero-panel-overlay"></div>
-      <div class="hero-panel-content hero-content--right">
-        <span class="hero-eyebrow">Temporada 2025</span>
-        <h1 class="hero-title">COLECCIÓN<br><em>25'</em></h1>
-        <a href="/drops/drop01" class="btn-hero">Explorar</a>
-      </div>
-    </div>
+    
+    <panelInicio></panelInicio>
 
     <!-- Scroll indicator -->
     <div class="hero-scroll">
@@ -163,7 +132,7 @@
     <div class="fullbleed-caption">
       <span class="fullbleed-tag">Colección 25'</span>
       <h2 class="fullbleed-title">BLESSED<br><em>SS25</em></h2>
-      <a href="#productos" class="btn-white">Ver colección</a>
+      <a href="/catalog" class="btn-white">Ver colección</a>
     </div>
   </section>
 
