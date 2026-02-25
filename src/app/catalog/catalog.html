@@ -1,66 +1,60 @@
 <!-- src/app/pages/catalogo/catalogo.html -->
-
 <div class="cat-page">
-
   <catalog-header
     [title]="title"
-    [filters]="filters"
-    [activeFilter]="activeFilter"
-    [sortOptions]="sortOptions"
-    [activeSort]="activeSort"
-    [sortOpen]="sortOpen"
-    [gridView]="gridView"
-    [visibleCount]="visibleCount"
-    (filterChanged)="setFilter($event)" 
-    (sortChanged)="setSort($event)"
-    (toggleSort)="toggleSort()"
-    (viewChanged)="setGridView($event)"
+    [filters]="fs.filters()"
+    [activeFilter]="fs.activeFilter()"
+    [sortOptions]="fs.sortOptions"
+    [activeSort]="fs.activeSort()"
+    [sortOpen]="fs.sortOpen()"
+    [gridView]="fs.gridView()"
+    (filterChanged)="fs.setFilter($event)"
+    (sortChanged)="fs.setSort($event)"
+    (toggleSort)="fs.toggleSort()"
+    (viewChanged)="fs.setGridView($event)"
   ></catalog-header>
 
   <!-- ══════════════════════════════════════════════
        GRILLA
   ══════════════════════════════════════════════ -->
-  <div class="cat-grid" [class.view-2]="gridView === '2col'" [class.view-4]="gridView === '4col'">
+  <div class="cat-grid" [class.view-2]="fs.gridView() === '2col'" [class.view-4]="fs.gridView() === '4col'">
 
     @for (p of visibleProducts; track p.id) {
       <article class="cat-card">
 
-    <div class="cat-img-wrap" [routerLink]="['/product', p.id]">
-
-      <img class="cat-img-main" [src]="p.images[0]" [alt]="p.name" loading="lazy" />
-
-      @if (p.images[1]) {
-        <img class="cat-img-hover" [src]="p.images[1]" [alt]="p.name" loading="lazy" />
-      }
-
-      <div class="cat-hover-overlay">
-        <div class="cat-quick-sizes">
-          @for (s of sizes; track s) {
-            <button
-              class="cat-qs"
-              [class.active]="isSizeSelected(p.id, s)"
-              (click)="selectSize(p.id, s, $event)" 
-            > {{ s }}
-            </button>
+        <div class="cat-img-wrap" [routerLink]="['/product', p.id]">
+          <img class="cat-img-main" [src]="p.images[0]" [alt]="p.name" loading="lazy" />
+          @if (p.images[1]) {
+            <img class="cat-img-hover" [src]="p.images[1]" [alt]="p.name" loading="lazy" />
           }
+
+          <div class="cat-hover-overlay">
+            <div class="cat-quick-sizes">
+              @for (s of sizes; track s) {
+                <button
+                  class="cat-qs"
+                  [class.active]="isSizeSelected(p.id, s)"
+                  (click)="selectSize(p.id, s, $event)"
+                >{{ s }}</button>
+              }
+            </div>
+            <button class="cat-add-btn" (click)="onAddClick(p, $event)">
+              + Agregar
+            </button>
+          </div>
         </div>
-        <button class="cat-add-btn" (click)="onAddClick(p, $event)">
-          + Agregar
-        </button>
-      </div>
-    </div>
 
-    <div class="cat-info">
-      <h3 class="cat-name" [routerLink]="['/product', p.id]">{{ p.name }}</h3>
-      <div class="cat-pricing">
-        <span class="cat-price">{{ formatPrice(p.price) }}</span>
-        @if (p.isSale && p.originalPrice !== p.price) {
-          <span class="cat-price-old">{{ formatPrice(p.originalPrice) }}</span>
-        }
-      </div>
-    </div>
+        <div class="cat-info">
+          <h3 class="cat-name" [routerLink]="['/product', p.id]">{{ p.name }}</h3>
+          <div class="cat-pricing">
+            <span class="cat-price">{{ formatPrice(p.price) }}</span>
+            @if (p.isSale && p.originalPrice !== p.price) {
+              <span class="cat-price-old">{{ formatPrice(p.originalPrice) }}</span>
+            }
+          </div>
+        </div>
 
-  </article>
+      </article>
     }
 
   </div>

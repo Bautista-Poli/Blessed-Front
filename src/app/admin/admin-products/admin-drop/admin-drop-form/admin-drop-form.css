@@ -1,0 +1,72 @@
+/* src/app/admin/drops/admin-drop-form.css */
+.adm-form-card {
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
+  padding: 1.75rem;
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+}
+
+.adm-form-title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #111;
+  margin: 0 0 1.5rem;
+}
+
+.adm-form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 1rem;
+}
+
+.adm-field { display: flex; flex-direction: column; gap: .35rem; }
+.adm-field.adm-field-wide { grid-column: 1 / -1; }
+
+.adm-field label { font-size: .78rem; font-weight: 600; color: #374151; }
+
+.adm-field input, .adm-field textarea {
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: .55rem .75rem;
+  font-size: .85rem;
+  outline: none;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.adm-field input:focus { border-color: #111; background: #fff; }
+
+.adm-field.err input { border-color: #ef4444; }
+.adm-err { font-size: .72rem; color: #ef4444; }
+
+/* Preview */
+.adm-preview {
+  grid-column: 1 / -1;
+  position: relative;
+  border-radius: 10px;
+  overflow: hidden;
+  max-height: 400px;
+  border: 1px solid #e5e7eb;
+}
+.adm-preview img { width: 100%; object-fit: cover; }
+
+.adm-form-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: .75rem;
+  margin-top: 1.5rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid #f3f4f6;
+}
+
+.adm-btn-save {
+  background: #111;
+  color: #fff;
+  border: none;
+  padding: .55rem 1.5rem;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+}

@@ -88,6 +88,52 @@
   font-weight: 400;
   color: #9ca3af;
 }
+/* Variables de color para fácil mantenimiento */
+:host {
+  --primary-color: #000000;      /* Color principal (negro tipo Blessed) */
+  --accent-color: #007bff;       /* Color para botones de acción */
+  --danger-color: #dc3545;       /* Color para el estado 'Cancelar' */
+  --white: #ffffff;
+}
+
+.adm-btn-add {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  border-radius: 8px;
+  border: none;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  background-color: black;
+  border: 2px solid white;
+  color: white;
+  border-color: white;
+  border-radius: 2px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.adm-btn-add:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  opacity: 0.6;
+}
+
+.adm-btn-add:active {
+  transform: translateY(0);
+}
+
+.adm-btn-add.is-cancel {
+  background-color: #dc3545;
+}
+
+.adm-btn-add::before {
+  font-size: 18px;
+  line-height: 1;
+}
 
 /* Preview — altura controlada */
 .drops-page .adm-preview {

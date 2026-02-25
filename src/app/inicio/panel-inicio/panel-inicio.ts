@@ -48,7 +48,7 @@ export class PanelInicioComponent implements OnInit {
           eyebrow: d.description,
           title: d.label,
           italicTitle: d.tagline,
-          link: `/drops/${d.number}`,
+          link: `/drops/drop${d.number}`,
           imageUrl: d.hero_image 
         }));
 

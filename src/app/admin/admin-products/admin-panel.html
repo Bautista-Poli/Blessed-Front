@@ -7,26 +7,29 @@
 
       <a class="adm-nav-item" [class.active]="activeTab() === 'productos'" (click)="activeTab.set('productos')">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="16" height="16">
-          <rect x="2" y="3" width="20" height="14" rx="1"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/>
+          <rect x="2" y="3" width="20" height="14" rx="1"/>
+          <line x1="8" y1="21" x2="16" y2="21"/>
+          <line x1="12" y1="17" x2="12" y2="21"/>
         </svg>
         Productos
       </a>
 
       <a class="adm-nav-item" [class.active]="activeTab() === 'drops'" (click)="activeTab.set('drops')">
-        <!-- ícono de rayo / drop -->
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="16" height="16">
           <path d="M13 2L4.09 12.96A1 1 0 0 0 5 14.5h6.5L10 22l9-11H13.5A1 1 0 0 0 13 10V2z"/>
         </svg>
         Drops
         @if (activeDropsCount() > 0) {
-          <span class="adm-nav-badge">({{ activeDropsCount() }})</span>
+          <span class="adm-nav-badge">{{ activeDropsCount() }}</span>
         }
       </a>
 
     </nav>
     <button class="adm-logout" (click)="logout()">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="14" height="14">
-        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/>
+        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+        <polyline points="16 17 21 12 16 7"/>
+        <line x1="21" y1="12" x2="9" y2="12"/>
       </svg>
       Cerrar sesión
     </button>
@@ -36,7 +39,7 @@
   <main class="adm-main">
 
     @if (activeTab() === 'productos') {
-      <!-- Topbar productos -->
+
       <div class="adm-topbar">
         <div>
           <h1 class="adm-title">Productos</h1>
@@ -47,7 +50,12 @@
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="14" height="14">
               <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
             </svg>
-            <input type="text" placeholder="Buscar producto..." [value]="searchQuery()" (input)="searchQuery.set($any($event.target).value)" />
+            <input
+              type="text"
+              placeholder="Buscar producto..."
+              [value]="searchQuery()"
+              (input)="searchQuery.set($any($event.target).value)"
+            />
           </div>
           <button class="adm-btn-add" (click)="toggleForm()">
             @if (showForm()) { ✕ Cancelar } @else { + Nuevo producto }
@@ -55,18 +63,16 @@
         </div>
       </div>
 
-      <!-- Alertas -->
       @if (successMsg()) { <div class="adm-alert success">✓ {{ successMsg() }}</div> }
       @if (errorMsg())   { <div class="adm-alert error">✕ {{ errorMsg() }}</div> }
 
-      <!-- Form productos (igual que antes) -->
       @if (showForm()) {
-        <div class="adm-form-card">
-          <!-- ... tu formulario de producto existente ... -->
-        </div>
+        <app-admin-product-form
+          (saved)="onProductSaved($event)"
+          (canceled)="toggleForm()">
+        </app-admin-product-form>
       }
 
-      <!-- Grid productos -->
       <div class="adm-grid">
         @for (p of filteredProducts(); track p.id) {
           <app-admin-product-card
@@ -81,6 +87,7 @@
           </div>
         }
       </div>
+
     }
 
     @if (activeTab() === 'drops') {

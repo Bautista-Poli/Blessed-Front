@@ -1,19 +1,5 @@
 <!-- src/app/drop/drop.html -->
 
-<catalog-header
-    [title]="config.label"
-    [filters]="filters"
-    [activeFilter]="activeFilter"
-    [sortOptions]="sortOptions"
-    [activeSort]="activeSort"
-    [sortOpen]="sortOpen"
-    [gridView]="gridView"
-    (filterChanged)="setFilter($event)" 
-    (sortChanged)="setSort($event)"
-    (toggleSort)="toggleSort()"
-    (viewChanged)="setGridView($event)"
-  ></catalog-header>
-
 <div class="drop-page" [attr.data-drop]="config.id">
 
   <!-- ══════════════════════════════════════════════════════
@@ -119,7 +105,7 @@
     </div>
 
     <div class="drop-grid" [class.view-2]="gridView === '2col'" [class.view-4]="gridView === '4col'">
-      @for (p of orderedProducts; track p.id) {
+      @for (p of products; track p.id){
         <article class="drop-card drop-reveal">
 
           <div class="drop-card-img-wrap" [routerLink]="['/product', p.id]">

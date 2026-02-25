@@ -25,7 +25,7 @@ export class AdminLogin {
     if (this.form.invalid) return;
     const { user, pass } = this.form.value;
     const ok = this.auth.login(user!, pass!);
-    if (ok) this.router.navigate(['/admin/products']);
+    if (ok) this.router.navigate(['/admin/panel']);
     else this.error.set(true);
   }
 }

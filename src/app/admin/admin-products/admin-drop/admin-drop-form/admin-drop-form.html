@@ -1,0 +1,93 @@
+<div class="adm-form-card">
+  <h2 class="adm-form-title">
+    {{ editingDrop ? 'Editar drop' : 'Nuevo drop' }}
+  </h2>
+
+  <form [formGroup]="form" (ngSubmit)="submit()" novalidate>
+    <div class="adm-form-grid">
+
+      <div class="adm-field" [class.err]="fieldErr('number')">
+        <label>Número</label>
+        <input type="text" formControlName="number" placeholder="03" />
+        @if (fieldErr('number')) { <span class="adm-err">Requerido</span> }
+      </div>
+
+      <div class="adm-field" [class.err]="fieldErr('label')">
+        <label>Label</label>
+        <input type="text" formControlName="label" placeholder="DROP 03" />
+        @if (fieldErr('label')) { <span class="adm-err">Requerido</span> }
+      </div>
+
+      <div class="adm-field" [class.err]="fieldErr('tagline')">
+        <label>Tagline</label>
+        <input type="text" formControlName="tagline" placeholder="NUEVO CAPÍTULO" />
+        @if (fieldErr('tagline')) { <span class="adm-err">Requerido</span> }
+      </div>
+
+      <div class="adm-field" [class.err]="fieldErr('release_date')">
+        <label>Fecha de lanzamiento</label>
+        <input type="text" formControlName="release_date" placeholder="2025-09-01" />
+        @if (fieldErr('release_date')) { <span class="adm-err">Requerido</span> }
+      </div>
+
+      <div class="adm-field">
+        <label>Total de piezas</label>
+        <input type="number" formControlName="total_pieces" placeholder="0" min="0" />
+      </div>
+
+      <div class="adm-field adm-field-color">
+        <label>Color de acento</label>
+        <div class="color-input-wrap">
+          <input type="color" formControlName="accent_color" />
+          <input type="text" formControlName="accent_color" placeholder="#e8e4dc" />
+        </div>
+      </div>
+
+      <div class="adm-field adm-field-wide" [class.err]="fieldErr('hero_image')">
+        <label>URL hero image principal</label>
+        <input type="text" formControlName="hero_image" placeholder="assets/Drops/..." (input)="onImageInput($event)" />
+        @if (fieldErr('hero_image')) { <span class="adm-err">Requerido</span> }
+      </div>
+
+      <div class="adm-field adm-field-wide">
+        <label>URL hero image 2 <span class="adm-opt">(opcional)</span></label>
+        <input type="text" formControlName="hero_image2" placeholder="assets/Drops/..." />
+      </div>
+
+      <div class="adm-field adm-field-wide" [class.err]="fieldErr('description')">
+        <label>Descripción</label>
+        <textarea formControlName="description" rows="3" placeholder="Descripción del drop..."></textarea>
+        @if (fieldErr('description')) { <span class="adm-err">Requerido</span> }
+      </div>
+
+      <div class="adm-field adm-flags">
+        <label class="adm-toggle">
+          <input type="checkbox" formControlName="active" />
+          <span class="adm-toggle-track"></span>
+          <span>Activo / visible</span>
+        </label>
+      </div>
+
+      @if (previewUrl()) {
+        <div class="adm-preview">
+          <img [src]="previewUrl()!" alt="preview hero" />
+          <span class="adm-preview-label">Preview Hero</span>
+        </div>
+      }
+
+    </div>
+
+    <div class="adm-form-footer">
+      <button type="button" class="adm-btn-cancel" (click)="cancel.emit()">
+        Cancelar
+      </button>
+      <button type="submit" class="adm-btn-save" [disabled]="saving">
+        @if (saving) { 
+          Guardando... 
+        } @else { 
+          {{ editingDrop ? 'Actualizar drop' : 'Crear drop' }} 
+        }
+      </button>
+    </div>
+  </form>
+</div>

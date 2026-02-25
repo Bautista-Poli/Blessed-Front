@@ -1,0 +1,67 @@
+<div class="cs-page" [style.--drop-accent]="config.accent_color">
+
+    <!-- Fondo con imagen hero si existe -->
+    @if (config.hero_image) {
+    <div class="cs-bg">
+        <img [src]="config.hero_image" [alt]="config.label" />
+        <div class="cs-bg-overlay"></div>
+    </div>
+    }
+
+    <!-- Número de fondo decorativo -->
+    <div class="cs-watermark" aria-hidden="true">{{ config.number }}</div>
+
+    <div class="cs-content">
+
+    <!-- Eyebrow -->
+    <span class="cs-eyebrow">BLESSED — {{ config.label }}</span>
+
+    <!-- Título -->
+    <h1 class="cs-title">
+        <span>PRÓXIMAMENTE</span>
+    </h1>
+
+    <p class="cs-tagline">{{ config.tagline }}</p>
+
+    <!-- Countdown -->
+    <div class="cs-countdown">
+        <div class="cs-unit">
+        <span class="cs-num">{{ pad(timeLeft.days) }}</span>
+        <span class="cs-label">DÍAS</span>
+        </div>
+        <span class="cs-sep">:</span>
+        <div class="cs-unit">
+        <span class="cs-num">{{ pad(timeLeft.hours) }}</span>
+        <span class="cs-label">HORAS</span>
+        </div>
+        <span class="cs-sep">:</span>
+        <div class="cs-unit">
+        <span class="cs-num">{{ pad(timeLeft.minutes) }}</span>
+        <span class="cs-label">MIN</span>
+        </div>
+        <span class="cs-sep">:</span>
+        <div class="cs-unit">
+        <span class="cs-num">{{ pad(timeLeft.seconds) }}</span>
+        <span class="cs-label">SEG</span>
+        </div>
+    </div>
+
+    <!-- Meta info -->
+    <div class="cs-meta">
+        <div class="cs-meta-item">
+        <span class="cs-meta-label">Piezas</span>
+        <span class="cs-meta-val">{{ config.total_pieces }}</span>
+        </div>
+        <div class="cs-meta-divider"></div>
+        <div class="cs-meta-item">
+        <span class="cs-meta-label">Lanzamiento</span>
+        <span class="cs-meta-val">{{ formattedDate }}</span>
+        </div>
+    </div>
+
+    </div>
+
+    <!-- Línea inferior animada -->
+    <div class="cs-bottom-bar"></div>
+
+</div>

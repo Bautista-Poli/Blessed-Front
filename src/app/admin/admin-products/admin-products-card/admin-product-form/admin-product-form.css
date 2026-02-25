@@ -1,0 +1,94 @@
+/* src/app/admin/products/admin-product-form/admin-product-form.css */
+
+/* ── Secciones del form ───────────────────────────────────────── */
+.pf-section {
+  margin-bottom: 1.75rem;
+}
+
+.pf-section-label {
+  font-size: .78rem;
+  font-weight: 700;
+  color: #111;
+  letter-spacing: .03em;
+  margin: 0 0 .25rem;
+}
+
+.pf-section-hint {
+  font-size: .72rem;
+  color: #9ca3af;
+  margin: 0 0 1rem;
+}
+
+/* ── Grid de slots estilo Instagram ──────────────────────────── */
+.pf-slots {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: auto;
+  gap: 8px;
+}
+
+.pf-slot-main {
+  position: relative;
+  grid-column: 1;
+  grid-row: 1 / 3;    /* ocupa 2 filas — igual que los 3 slots secundarios juntos */
+}
+
+.pf-slot-main app-image-upload-slot {
+  height: 100%;
+  display: block;
+}
+
+/* Forzamos que el slot principal sea cuadrado y ocupe el alto correcto */
+.pf-slot-main app-image-upload-slot ::ng-deep .slot {
+  aspect-ratio: unset;
+  height: 100%;
+  min-height: 200px;
+}
+
+.pf-slot-badge {
+  position: absolute;
+  bottom: 8px;
+  left: 8px;
+  background: rgba(0,0,0,.6);
+  color: #fff;
+  font-size: .62rem;
+  font-weight: 700;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  padding: .2rem .55rem;
+  border-radius: 999px;
+  pointer-events: none;
+}
+
+.pf-slots-secondary {
+  grid-column: 2;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* ── Responsive ──────────────────────────────────────────────── */
+@media (max-width: 480px) {
+  .pf-slots {
+    grid-template-columns: 1fr;
+  }
+
+  .pf-slot-main {
+    grid-row: auto;
+  }
+
+  .pf-slot-main app-image-upload-slot ::ng-deep .slot {
+    aspect-ratio: 1;
+    height: auto;
+    min-height: unset;
+  }
+
+  .pf-slots-secondary {
+    grid-column: 1;
+    flex-direction: row;
+  }
+
+  .pf-slots-secondary .pf-slot-secondary {
+    flex: 1;
+  }
+}

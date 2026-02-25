@@ -1,0 +1,116 @@
+<!-- src/app/admin/products/admin-product-form/admin-product-form.html -->
+<div class="adm-form-card">
+  <h2 class="adm-form-title">Nuevo producto</h2>
+
+  @if (errorMsg()) {
+    <div class="adm-alert error">✕ {{ errorMsg() }}</div>
+  }
+
+  <form [formGroup]="form" (ngSubmit)="submit()" novalidate>
+
+    <!-- ══ FOTOS ════════════════════════════════════════════════ -->
+    <div class="pf-section">
+      <p class="pf-section-label">Fotos del producto</p>
+      <p class="pf-section-hint">La primera foto es la principal. Arrastrá o tocá cada slot para subir.</p>
+
+      <div class="pf-slots">
+        <!-- Slot principal — grande -->
+        <div class="pf-slot-main">
+          <app-image-upload-slot
+            label="principal"
+            [required]="true"
+            (urlChange)="onImageUrl(0, $event)">
+          </app-image-upload-slot>
+          <span class="pf-slot-badge">Principal</span>
+        </div>
+
+        <!-- Slots secundarios — 3 pequeños -->
+        <div class="pf-slots-secondary">
+          @for (i of [1, 2, 3]; track i) {
+            <div class="pf-slot-secondary">
+              <app-image-upload-slot
+                [label]="(i + 1).toString()"
+                (urlChange)="onImageUrl(i, $event)">
+              </app-image-upload-slot>
+            </div>
+          }
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ DATOS ════════════════════════════════════════════════ -->
+    <div class="pf-section">
+      <p class="pf-section-label">Información del producto</p>
+
+      <div class="adm-form-grid">
+
+        <div class="adm-field" [class.err]="fieldErr('id')">
+          <label>ID único</label>
+          <input type="text" formControlName="id" placeholder="p09" />
+          @if (fieldErr('id')) { <span class="adm-err">Requerido</span> }
+        </div>
+
+        <div class="adm-field" [class.err]="fieldErr('name')">
+          <label>Nombre</label>
+          <input type="text" formControlName="name" placeholder='"SQUAD" TEE' />
+          @if (fieldErr('name')) { <span class="adm-err">Requerido</span> }
+        </div>
+
+        <div class="adm-field">
+          <label>Categoría</label>
+          <select formControlName="cat">
+            @for (c of CATS; track c) { <option [value]="c">{{ c }}</option> }
+          </select>
+        </div>
+
+        <div class="adm-field" [class.err]="fieldErr('drop')">
+          <label>Drop</label>
+          <select formControlName="drop">
+            @for (d of drops(); track d.id) {
+              <option [value]="d.id">{{ d.label }}</option>
+            }
+          </select>
+        </div>
+
+        <div class="adm-field" [class.err]="fieldErr('price')">
+          <label>Precio ARS</label>
+          <input type="number" formControlName="price" placeholder="29900" />
+          @if (fieldErr('price')) { <span class="adm-err">Ingresá un precio válido</span> }
+        </div>
+
+        <div class="adm-field" [class.err]="fieldErr('originalPrice')">
+          <label>Precio original ARS</label>
+          <input type="number" formControlName="originalPrice" placeholder="46000" />
+          @if (fieldErr('originalPrice')) { <span class="adm-err">Requerido</span> }
+        </div>
+
+        <div class="adm-field adm-field-wide">
+          <label>Descripción <span class="adm-opt">(opcional)</span></label>
+          <textarea formControlName="description" rows="2" placeholder="Descripción corta del producto..."></textarea>
+        </div>
+
+        <div class="adm-field adm-flags">
+          <label class="adm-toggle">
+            <input type="checkbox" formControlName="isNew" />
+            <span class="adm-toggle-track"></span>
+            <span>Es nuevo</span>
+          </label>
+          <label class="adm-toggle">
+            <input type="checkbox" formControlName="isSale" />
+            <span class="adm-toggle-track"></span>
+            <span>En oferta</span>
+          </label>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="adm-form-footer">
+      <button type="button" class="adm-btn-cancel" (click)="cancel()">Cancelar</button>
+      <button type="submit" class="adm-btn-save" [disabled]="saving()">
+        @if (saving()) { Guardando... } @else { Guardar producto }
+      </button>
+    </div>
+
+  </form>
+</div>

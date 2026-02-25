@@ -1,5 +1,4 @@
-// src/app/admin/components/admin-product-card/admin-product-card.ts
-
+// src/app/admin/products/admin-products-card/admin-products-card.ts
 import { CommonModule } from '@angular/common';
 import { Component, ElementRef, EventEmitter, Input, Output, ViewChild } from '@angular/core';
 import { CatalogProduct } from '../../../interfaces/product';
@@ -14,28 +13,23 @@ import { CatalogProduct } from '../../../interfaces/product';
 export class AdminProductCardComponent {
   @Input({ required: true }) product!: CatalogProduct;
   @Input() isDeleting = false;
-  
+
   @Output() onDelete = new EventEmitter<void>();
   @ViewChild('slider') slider!: ElementRef<HTMLDivElement>;
-  
+
+  // Bug fix: el original duplicaba imágenes (agregaba images[0], images[1] Y luego ...images completo)
   get allImages(): string[] {
-    const images = [this.product.images[0]];
-    if (this.product.images[1]) images.push(this.product.images[1]);
-    if (this.product.images) images.push(...this.product.images);
-    return images;
+    return this.product.images.filter(Boolean);
   }
 
-  scroll(direction: number) {
+  scroll(direction: number): void {
     const el = this.slider.nativeElement;
-    const scrollAmount = el.offsetWidth; // Desplazamos exactamente el ancho de una foto
-    el.scrollBy({ left: direction * scrollAmount, behavior: 'smooth' });
+    el.scrollBy({ left: direction * el.offsetWidth, behavior: 'smooth' });
   }
 
   formatPrice(n: number): string {
-    return new Intl.NumberFormat('es-AR', { 
-      style: 'currency', 
-      currency: 'ARS', 
-      minimumFractionDigits: 0 
+    return new Intl.NumberFormat('es-AR', {
+      style: 'currency', currency: 'ARS', minimumFractionDigits: 0
     }).format(n);
   }
 
