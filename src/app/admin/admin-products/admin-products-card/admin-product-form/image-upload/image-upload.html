@@ -1,0 +1,59 @@
+<div
+  class="slot"
+  [class.slot--drag]="isDragging()"
+  [class.slot--done]="state() === 'done'"
+  [class.slot--error]="state() === 'error'"
+  [class.slot--required]="required"
+  (dragover)="onDragOver($event)"
+  (dragleave)="onDragLeave()"
+  (drop)="onDrop($event)"
+  (click)="fileInput.click()"
+>
+  <input
+    #fileInput
+    type="file"
+    accept="image/*"
+    class="slot__input"
+    (change)="onFileChange($event)"
+  />
+
+  @if (state() === 'empty') {
+    <div class="slot__empty">
+      <div class="slot__icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="28" height="28">
+          <rect x="3" y="3" width="18" height="18" rx="2"/>
+          <circle cx="8.5" cy="8.5" r="1.5"/>
+          <polyline points="21 15 16 10 5 21"/>
+        </svg>
+      </div>
+
+      <span class="slot__label">
+        @if (required) { <strong>Foto {{ label }}</strong> } @else { Foto {{ label }} }
+      </span>
+      <span class="slot__hint">Arrastrá o tocá</span>
+    </div>
+  }
+
+  @if (state() === 'done' && previewSrc()) {
+    <div class="slot__preview">
+      <img [src]="previewSrc()!" [alt]="label" />
+      <div class="slot__overlay">
+        <button class="slot__remove" (click)="remove($event)" type="button" aria-label="Eliminar">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="14" height="14">
+            <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+          </svg>
+        </button>
+        <span class="slot__change">Cambiar</span>
+      </div>
+    </div>
+  }
+
+  @if (state() === 'error') {
+    <div class="slot__error-content">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="1.5" width="24" height="24">
+        <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+      </svg>
+      <span>Error<br><small>Tocá para reintentar</small></span>
+    </div>
+  }
+</div>

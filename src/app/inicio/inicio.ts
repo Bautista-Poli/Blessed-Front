@@ -18,8 +18,7 @@ import { CatalogProduct } from '../interfaces/product';
   imports: [CommonModule, FormsModule, IgCarousel, RouterLink, CartDrawer, PanelInicioComponent],
   templateUrl: './inicio.html',
   styleUrls: [
-    './inicio.css',
-    './inicio2.css'
+    './inicio.css'
   ],
 })
 export class Inicio implements OnInit, OnDestroy {

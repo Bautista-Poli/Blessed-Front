@@ -1,17 +1,16 @@
 /* ── CONFIGURACIÓN DEL COMPONENTE ── */
 :host {
-  display: block; 
-  width: 170%;
+  display: block;
+  width: 200%;         
   --ease-out: cubic-bezier(0.33, 1, 0.68, 1);
   --white: #ffffff;
-  margin-left: 4%;
 }
 
 /* ── CONTENEDOR PRINCIPAL ── */
 .hero-split-container {
   display: flex;
-  width: 100%;       /* Ocupa el 100% del padre */
-  height: 100vh;      /* Ocupa todo el alto de la pantalla */
+  width: 100%;
+  height: 100%;         /* hereda el 100vh del .hero padre */
   position: relative;
   overflow: hidden;
   background-color: #000;
@@ -20,16 +19,18 @@
 /* ── PANELES ── */
 .hero-panel {
   position: relative;
-  width: 100%; 
   overflow: hidden;
   text-decoration: none;
   cursor: pointer;
-  /* Flex 1 asegura que se repartan el espacio 50/50 */
-  flex: 1; 
+  flex: 1;
   transition: flex 0.6s var(--ease-out);
   display: flex;
-  align-items: flex-end; /* Alinea el texto abajo */
+  align-items: flex-end;
 }
+
+/* Hover: expande el panel activo */
+.hero-split-container:hover .hero-panel { flex: 0.75; }
+.hero-split-container .hero-panel:hover { flex: 1.25; }
 
 /* Fondo de imagen */
 .hero-panel-bg {
@@ -41,8 +42,28 @@
 .hero-panel-bg img {
   width: 100%;
   height: 100%;
-  object-fit: cover; /* Evita que la imagen se deforme o corte mal */
-  object-position: center;
+  object-fit: cover;
+  object-position: center top;   /* enfoca la parte superior (caras/torsos) */
+  transition: transform .8s var(--ease-out);
+}
+
+.hero-panel:hover .hero-panel-bg img {
+  transform: scale(1.04);
+}
+
+/* Gradiente inferior para leer el texto */
+.hero-panel::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to top,
+    rgba(0,0,0,.65) 0%,
+    rgba(0,0,0,.1)  50%,
+    transparent     100%
+  );
+  z-index: 1;
+  pointer-events: none;
 }
 
 /* ── CONTENIDO Y TEXTO ── */
@@ -50,7 +71,7 @@
   position: relative;
   z-index: 2;
   color: white;
-  padding: 5% 60px; /* Usamos padding en lugar de posiciones fijas para evitar cortes */
+  padding: 48px 48px;
   width: 100%;
   box-sizing: border-box;
   pointer-events: none;
@@ -59,15 +80,23 @@
 .hero-content--left  { text-align: left; }
 .hero-content--right { text-align: right; }
 
+.hero-eyebrow {
+  display: block;
+  font-size: 10px;
+  letter-spacing: .3em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,.65);
+  margin-bottom: 10px;
+}
+
 .hero-title {
-  font-family: var(--font-display, sans-serif);
-  /* Tamaño de fuente fluido para que no se pise con el logo */
-  font-size: clamp(40px, 7vw, 100px); 
+  font-family: var(--font-display, serif);
+  font-size: clamp(32px, 5vw, 90px);
   font-weight: 500;
   line-height: 0.9;
-  margin: 0;
+  margin: 0 0 20px;
   text-transform: uppercase;
-  text-shadow: 0 4px 30px rgba(0,0,0,0.5);
+  text-shadow: 0 4px 30px rgba(0,0,0,.5);
 }
 
 .hero-title em {
@@ -75,12 +104,29 @@
   display: block;
 }
 
+.btn-hero {
+  display: inline-block;
+  font-size: 10px;
+  letter-spacing: .25em;
+  text-transform: uppercase;
+  color: #ffffff;
+  border: 1px solid rgba(255,255,255,.55);
+  padding: 12px 24px;
+  background: rgba(0,0,0,.15);
+  backdrop-filter: blur(4px);
+  transition: background .3s, color .3s, border-color .3s;
+  pointer-events: all;
+}
+.btn-hero:hover {
+  background: #ffffff;
+  color: #000000;
+  border-color: #ffffff;
+}
+
 /* ── DIVISOR Y LOGO ── */
 .hero-divider {
   position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 50%;
+  top: 0; bottom: 0; left: 50%;
   transform: translateX(-50%);
   z-index: 10;
   display: flex;
@@ -94,15 +140,15 @@
   position: absolute;
   height: 100%;
   width: 1px;
-  background: rgba(255,255,255,0.2);
+  background: rgba(255,255,255,.2);
 }
 
 .hero-logo-center {
   width: 64px;
   height: 64px;
-  background: rgba(0,0,0,0.4);
+  background: rgba(0,0,0,.4);
   backdrop-filter: blur(10px);
-  border: 1px solid rgba(255,255,255,0.2);
+  border: 1px solid rgba(255,255,255,.2);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -111,14 +157,53 @@
 .hero-logo-center img {
   width: 35px;
   height: auto;
+  object-fit: contain;  /* evita que la img del logo se deforme */
 }
 
-/* ── RESPONSIVE ── */
+/* ══════════════════════════════════════════════════════════
+   RESPONSIVE MOBILE
+══════════════════════════════════════════════════════════ */
 @media (max-width: 768px) {
   .hero-split-container {
-    flex-direction: column; /* Se apilan en vertical en móvil */
+    flex-direction: column;
   }
-  .hero-divider {
-    display: none;
+
+  
+  .hero-panel {
+    flex: none;
+    height: 200%;        
+    width: 100%;
+  }
+  .hero-panel-bg img {
+    width: 50%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center; 
+  }
+
+  /* Desactivar el hover-expand en mobile (no hay hover táctil) */
+  .hero-split-container:hover .hero-panel,
+  .hero-split-container .hero-panel:hover { flex: none; }
+
+  .hero-divider { display: none; }
+
+  .hero-panel-content {
+    padding: 24px 24px;
+  }
+
+  .hero-title {
+    font-size: clamp(28px, 9vw, 48px);
+    margin-bottom: 14px;
+  }
+
+  .btn-hero {
+    font-size: 9px;
+    padding: 10px 18px;
+  }
+}
+
+@media (max-width: 480px) {
+  .hero-title {
+    font-size: clamp(24px, 10vw, 40px);
   }
 }

@@ -71,22 +71,22 @@
           (saved)="onProductSaved($event)"
           (canceled)="toggleForm()">
         </app-admin-product-form>
+      } @else {
+        <div class="adm-grid">
+          @for (p of filteredProducts(); track p.id) {
+            <app-admin-product-card
+              [product]="p"
+              [isDeleting]="deleting() === p.id"
+              (onDelete)="deleteProduct(p.id, p.name)">
+            </app-admin-product-card>
+          }
+          @if (filteredProducts().length === 0) {
+            <div class="adm-empty">
+              <p>No hay productos{{ searchQuery() ? ' que coincidan con "' + searchQuery() + '"' : '' }}.</p>
+            </div>
+          }
+        </div>
       }
-
-      <div class="adm-grid">
-        @for (p of filteredProducts(); track p.id) {
-          <app-admin-product-card
-            [product]="p"
-            [isDeleting]="deleting() === p.id"
-            (onDelete)="deleteProduct(p.id, p.name)">
-          </app-admin-product-card>
-        }
-        @if (filteredProducts().length === 0) {
-          <div class="adm-empty">
-            <p>No hay productos{{ searchQuery() ? ' que coincidan con "' + searchQuery() + '"' : '' }}.</p>
-          </div>
-        }
-      </div>
 
     }
 
