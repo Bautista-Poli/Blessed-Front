@@ -1,5 +1,5 @@
 // src/app/inicio/inicio.ts
-import { Component, OnInit, OnDestroy, inject, signal, ChangeDetectorRef } from '@angular/core'; // Añadimos signal y ChangeDetectorRef
+import { Component, OnInit, OnDestroy, inject, signal, ChangeDetectorRef, ViewEncapsulation } from '@angular/core'; // Añadimos signal y ChangeDetectorRef
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
@@ -15,12 +15,12 @@ import { CatalogProduct } from '../interfaces/product';
 @Component({
   selector: 'app-inicio',
   standalone: true,
+  encapsulation: ViewEncapsulation.None,  // ← AGREGÁ ESTA LÍNEA
   imports: [CommonModule, FormsModule, IgCarousel, RouterLink, CartDrawer, PanelInicioComponent],
   templateUrl: './inicio.html',
-  styleUrls: [
-    './inicio.css'
-  ],
+  styleUrls: ['./inicio.css'],
 })
+
 export class Inicio implements OnInit, OnDestroy {
   private cartService    = inject(CartService);
   private productService = inject(ProductService);
